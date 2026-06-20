@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+07_noise_bp_q200.wav,5.0,117,117,2.472,0.5,597.3,981.3,33,0.004839,0.006055,5.2

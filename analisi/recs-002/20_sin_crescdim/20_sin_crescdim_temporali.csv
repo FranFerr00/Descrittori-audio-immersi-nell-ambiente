@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+20_sin_crescdim.wav,5.0,117,117,2.311,0.467,1024.0,2304.0,18,0.003807,0.006785,18.7

@@ -1,0 +1,836 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{graphicx}
+
+\geometry{margin=2.5cm}
+
+\newcommand{\desc}[1]{\subsection{#1}}
+\newcommand{\formula}{\paragraph{Formula.}}
+\newcommand{\ascolta}{\paragraph{Cosa ascolta.}}
+\newcommand{\range}{\paragraph{Valori tipici.}}
+\newcommand{\rif}{\paragraph{Riferimenti.}}
+\newcommand{\oss}{\paragraph{Osservazioni dai test.}}
+
+\title{Descrittori spettrali per l'analisi del timbro\\[0.5em]
+\large Dispensa di studio per \emph{interfantasia}}
+\author{Francesco Ferrante}
+\date{Aprile 2026}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduzione}
+% ============================================================
+
+Questa dispensa raccoglie i descrittori spettrali studiati e implementati per
+il sistema \emph{interfantasia}. L'obiettivo è comprendere cosa ciascun
+descrittore cattura del segnale audio, per poi decidere come mappare i
+descrittori verso i parametri del filtro bicomb.
+
+Tutti i descrittori vengono calcolati frame per frame su una
+rappresentazione FFT del segnale. I parametri di analisi sono:
+\begin{itemize}[nosep]
+  \item FFT size: 8192 campioni
+  \item Sample rate: 96\,000 Hz (risoluzione in frequenza: $\sim$11.7 Hz per bin)
+  \item Finestra: Hann, overlap 50\%
+  \item Banda analizzata: 0--10\,000 Hz
+\end{itemize}
+
+I segnali di test sono generati in Csound e comprendono: sinusoidi pure,
+noise bianco, sinusoidi in \texttt{tanh} (distorsione a drive variabile),
+noise filtrato bandpass, sintesi FM, miscele sinusoide/noise, glissandi
+e coppie di sinusoidi.
+
+I descrittori sono organizzati in quattro categorie:
+\begin{enumerate}[nosep]
+  \item \textbf{Forma dello spettro}: descrivono dove si concentra l'energia
+  \item \textbf{Distribuzione}: descrivono come l'energia è distribuita
+  \item \textbf{Tonalità}: misurano quanto il segnale è periodico o rumoroso
+  \item \textbf{Dinamica}: misurano il cambiamento nel tempo
+\end{enumerate}
+
+\subsection{Notazione}
+
+In tutte le formule:
+\begin{itemize}[nosep]
+  \item $X(k)$ è l'ampiezza (magnitudine) della $k$-esima bin della FFT
+  \item $f(k)$ è la frequenza corrispondente alla bin $k$
+  \item $N$ è il numero di bin considerate
+  \item $\mu_1$ è il centroide spettrale (momento primo)
+  \item $\sigma$ è lo spread spettrale (deviazione standard)
+\end{itemize}
+
+
+% ============================================================
+\section{Forma dello spettro}
+% ============================================================
+
+Questi descrittori indicano \emph{dove} si trova l'energia nello spettro.
+
+% ---
+\desc{Centroide spettrale (\emph{spectral centroid})}
+
+\formula
+\[
+  \mu_1 = \frac{\displaystyle\sum_{k=0}^{N-1} f(k) \cdot X(k)}
+               {\displaystyle\sum_{k=0}^{N-1} X(k)}
+\]
+
+\ascolta
+Il ``baricentro'' dello spettro, la frequenza media pesata per ampiezza.
+Corrisponde alla percezione di \textbf{brillantezza}: un centroide alto
+indica un suono brillante, uno basso indica un suono cupo. È la prima
+delle tre dimensioni percettive del timbro individuate da
+Krimphoff et al.\ (1994).
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: 440 Hz (coincide con la fondamentale)
+  \item Noise bianco: 5\,000 Hz (centro della banda 0--10\,000 Hz)
+  \item Tanh drive 20: 1\,876 Hz (le armoniche alzano il baricentro)
+  \item FM indice 10: 4\,283 Hz (bande laterali estese)
+\end{itemize}
+
+\rif Peeters (2003, sez.~6.1.1), Lerch (2023, sez.~3.5.1), Krimphoff et al.\ (1994).
+
+% ---
+\desc{Spread spettrale (\emph{spectral spread})}
+
+\formula
+\[
+  \sigma = \sqrt{\frac{\displaystyle\sum_{k=0}^{N-1} \big(f(k) - \mu_1\big)^2 \cdot X(k)}
+                      {\displaystyle\sum_{k=0}^{N-1} X(k)}}
+\]
+
+\ascolta
+La \textbf{larghezza di banda} dello spettro: quanto l'energia è
+dispersa attorno al centroide. Un valore alto indica uno spettro ampio
+(noise, molte armoniche), un valore basso indica energia concentrata
+(sinusoide pura). Corrisponde alla percezione di ``pienezza'' del suono.
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: 10 Hz (energia in una sola bin)
+  \item Noise bianco: 2\,888 Hz (distribuzione ampia)
+  \item Tanh drive 20: 2\,110 Hz (armoniche sparse)
+  \item 2 sinusoidi 200+4000 Hz: 1\,900 Hz (distanza tra le componenti)
+\end{itemize}
+
+\oss Lo spread è il descrittore migliore per catturare la distanza
+tra componenti spettrali (due sinusoidi lontane) e la ricchezza armonica
+della distorsione (tanh drive 1: 174 Hz $\to$ drive 20: 2\,110 Hz).
+
+\rif Peeters (2003, sez.~6.1.2), Lerch (2023, sez.~3.5.2).
+
+% ---
+\desc{Rolloff spettrale (\emph{spectral rolloff})}
+
+\formula
+La frequenza $f_r$ tale che:
+\[
+  \sum_{k=0}^{k_r} X(k) = 0{,}85 \cdot \sum_{k=0}^{N-1} X(k)
+\]
+dove $k_r$ è l'indice della bin corrispondente a $f_r$.
+
+\ascolta
+La frequenza sotto la quale si trova l'\textbf{85\% dell'energia}. Indica
+il ``confine superiore'' effettivo dello spettro. Complementa il centroide:
+il centroide dice dov'è il baricentro, il rolloff dice fin dove arriva
+l'energia.
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: 445 Hz
+  \item Noise bianco: 8\,512 Hz (energia fino al limite)
+  \item Tanh drive 20: 3\,961 Hz
+  \item FM indice 10: 6\,398 Hz
+\end{itemize}
+
+\rif Lerch (2023, sez.~3.5.4).
+
+% ---
+\desc{Pendenza spettrale (\emph{spectral slope})}
+
+\formula
+Regressione lineare della magnitudine sulle frequenze:
+\[
+  \text{slope} = \frac{\displaystyle\sum_{k=0}^{N-1} \big(f(k) - \bar{f}\big) \cdot \big(X(k) - \bar{X}\big)}
+                      {\displaystyle\sum_{k=0}^{N-1} \big(f(k) - \bar{f}\big)^2}
+\]
+dove $\bar{f}$ e $\bar{X}$ sono le medie delle frequenze e delle magnitudini.
+
+\ascolta
+La \textbf{tendenza generale} dello spettro: negativa se l'energia decresce
+verso le alte frequenze (tipico degli strumenti acustici), positiva se
+cresce. Nei nostri test i valori sono molto piccoli e tutti negativi
+(o quasi zero), perché il threshold rimuove le bin deboli.
+
+\rif Lerch (2023, sez.~3.5.6).
+
+% ---
+\desc{Deviazione del rapporto fra bande ottavali (\emph{OBSIR-std})}
+
+\formula
+\[
+  \text{OBSIR}_i = \log_{10} E_{i+1} - \log_{10} E_i
+  \qquad
+  \text{obsir\_std} = \operatorname{std}(\text{OBSIR})
+\]
+con $E_i = \sum_{k:\,e_i \le f(k) < e_{i+1}} |X(k)|^2$ ed
+edge $e = [200, 400, 800, 1600, 3200, 6400, 10000]$~Hz.
+
+\ascolta
+Misura quanto il decadimento spettrale è \textbf{non uniforme} fra le
+sei bande ottavali. Valori bassi: lo spettro perde energia con lo
+stesso rapporto fra ogni coppia di ottave (decadimento regolare).
+Valori alti: alcune bande hanno picchi o buchi marcati rispetto alle
+adiacenti.
+
+\range
+\begin{itemize}[nosep]
+  \item Clarinetto contrabbasso, piano (001): 0.568
+  \item Clarinetto contrabbasso, forte (004): 0.672
+  \item Timpano, tenuto piano (003): 0.397
+  \item Timpano, tenuto forte (006): 0.520
+  \item (valori completi sul corpus dopo rigenerazione)
+\end{itemize}
+
+\rif Essid, Richard, David (2006), \emph{IEEE TASLP} 14(4).
+
+\bigskip
+\noindent\textit{Nota di revisione}: ha sostituito il \emph{spectral
+decrease} (Peeters 2004 / Lerch 3.5.5), rimosso dai 16 perché ridondante
+con lo slope (Timbre Toolbox 2011, Peeters et al., \emph{JASA} 130(5)).
+La scheda d'archivio resta in \texttt{diario/decrease/}.
+
+
+% ============================================================
+\section{Distribuzione}
+% ============================================================
+
+Questi descrittori caratterizzano la \emph{forma} della distribuzione
+spettrale: quanto è piatta, appuntita, simmetrica.
+
+% ---
+\desc{Flatness spettrale (\emph{spectral flatness}, SFM)}
+
+\formula
+\[
+  \text{SFM} = \frac{\text{media geometrica di } X(k)}
+                     {\text{media aritmetica di } X(k)}
+  = \frac{\Big(\prod_{k} X(k)\Big)^{1/N}}
+         {\frac{1}{N}\sum_{k} X(k)}
+\]
+
+In pratica, per evitare underflow:
+\[
+  \text{SFM} = \frac{\exp\!\Big(\frac{1}{N}\sum_k \ln X(k)\Big)}
+                     {\frac{1}{N}\sum_k X(k)}
+\]
+
+\ascolta
+La \textbf{uniformità} dello spettro. Uno spettro perfettamente piatto
+(noise bianco) ha SFM $\approx 1$. Uno spettro con pochi picchi su sfondo
+silenzioso (sinusoide) ha SFM basso. Misura la ``rumorosità'' globale.
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: 0.28
+  \item Noise bianco: 0.94
+  \item Tanh drive 20: 0.40
+  \item FM indice 10: 0.55
+  \item Mix sin 50\% + noise 50\%: 0.74
+\end{itemize}
+
+\oss La flatness è calcolata solo sulle bin attive (sopra soglia) per
+evitare che le bin a zero trascinino il valore. La tanh cambia poco la
+flatness (0.28 $\to$ 0.40 da drive 1 a 20) perché le armoniche si
+aggiungono come picchi discreti, non come spettro continuo.
+
+\rif Peeters (2003, sez.~9.1), Lerch (2023, sez.~3.5.10), MPEG-7.
+
+% ---
+\desc{Crest Factor spettrale (\emph{spectral crest factor})}
+
+\formula
+\[
+  \text{crest} = \frac{\max_k X(k)}{\frac{1}{N}\sum_k X(k)}
+\]
+Calcolato solo sulle bin attive (sopra soglia).
+
+\ascolta
+Quanto il \textbf{picco massimo} domina sullo spettro.  Alto quando c'è
+una componente molto più forte delle altre (fondamentale dominante),
+basso quando l'energia è distribuita (noise). È concettualmente
+l'inverso della flatness, ma si concentra sul singolo massimo anziché
+sulla forma complessiva.
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: 3.3
+  \item Noise bianco: 2.5
+  \item Tanh drive 20: 9.4 (fondamentale domina sulle armoniche)
+  \item Noise BP Q=50: 12.2 (filtro stretto concentra l'energia)
+  \item Mix sin 50\% + noise 50\%: 36.9 (la sinusoide emerge dal noise)
+\end{itemize}
+
+\oss Il crest factor cattura bene la distorsione (tanh drive 1: 4.4 $\to$
+drive 5: 8.0 $\to$ drive 20: 9.4), perché la fondamentale cresce
+rispetto alle armoniche più deboli. Il valore più alto si ha per la
+miscela 50/50 (36.9): la sinusoide è un picco netto su un pavimento
+di rumore.
+
+\rif Peeters (2003, sez.~9.1), Lerch (2023, sez.~3.5.9).
+
+% ---
+\desc{Asimmetria spettrale (\emph{spectral skewness})}
+
+\formula
+\[
+  \gamma_1 = \frac{\displaystyle\sum_{k=0}^{N-1}
+    \left(\frac{f(k) - \mu_1}{\sigma}\right)^3 \cdot X(k)}
+    {\displaystyle\sum_{k=0}^{N-1} X(k)}
+\]
+
+\ascolta
+L'\textbf{asimmetria} dello spettro rispetto al centroide. Positiva se
+l'energia è concentrata sotto il centroide (coda verso le alte frequenze),
+negativa se l'energia è sopra il centroide (coda verso le basse).
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: $\sim 0$ (simmetrica, una sola componente)
+  \item Noise bianco: $\sim 0$ (simmetrico)
+  \item Tanh drive 1: 4.6 (fondamentale forte, poche armoniche deboli in alto)
+  \item FM indice 10: $-0.15$ (quasi simmetrica, bande laterali bilaterali)
+  \item Mix sin 75\% + noise 25\%: 5.6 (la sinusoide sbilancia verso il basso)
+\end{itemize}
+
+\oss La skewness alta della tanh drive 1 (4.6) indica che le poche
+armoniche sono molto più deboli della fondamentale e si estendono
+verso l'alto. Con drive 20 la skewness scende a 1.7: le armoniche
+sono più bilanciate.
+
+\rif Lerch (2023, sez.~3.5.3).
+
+% ---
+\desc{Curtosi spettrale (\emph{spectral kurtosis})}
+
+\formula
+\[
+  \gamma_2 = \frac{\displaystyle\sum_{k=0}^{N-1}
+    \left(\frac{f(k) - \mu_1}{\sigma}\right)^4 \cdot X(k)}
+    {\displaystyle\sum_{k=0}^{N-1} X(k)} - 3
+\]
+Il $-3$ (``curtosi in eccesso'') fa sì che una distribuzione
+gaussiana dia valore 0.
+
+\ascolta
+Quanto lo spettro è \textbf{appuntito} (leptocurtico) o \textbf{piatto}
+(platicurtico). Valori alti indicano poche componenti isolate con code
+lunghe, valori bassi (negativi) indicano distribuzione uniforme.
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: 1.5
+  \item Noise bianco: $-1.2$ (distribuzione molto piatta)
+  \item Tanh drive 1: 19.5 (spettro estremamente appuntito)
+  \item Tanh drive 20: 2.2 (meno appuntito, più armoniche)
+  \item FM indice 10: $-1.0$ (quasi piatto, tante bande laterali)
+\end{itemize}
+
+\oss La kurtosis ha un range enorme (da $-1.2$ a 19.5) e distingue
+molto bene il numero di componenti attive. La tanh drive 1
+(fondamentale + pochissime armoniche) ha kurtosis altissima.
+La FM a indice alto, che ha molte bande laterali di ampiezza simile,
+ha kurtosis vicina a $-1$, quasi come il noise.
+
+\rif Lerch (2023, sez.~3.5.3).
+
+% ---
+\desc{Entropia spettrale (\emph{spectral entropy})}
+
+\formula
+\[
+  p(k) = \frac{|X(k)|^2}{\sum_j |X(j)|^2}
+\]
+\[
+  \text{entropy} = \frac{-\sum_k p(k) \log_2 p(k)}{\log_2 N}
+\]
+con $N$ numero totale di bin (la normalizzazione per $\log_2 N$ porta
+il valore in $[0,1]$).
+
+\ascolta
+La \textbf{distribuzione di energia} sullo spettro: bassa quando una o
+poche bin dominano (sinusoide), alta quando l'energia è distribuita
+uniformemente (noise). A differenza di flatness e crest, non satura
+sui casi estremi e dilata la zona di mezzo dove vivono i segnali
+armonici complessi.
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide bin-esatto: 0.13
+  \item Noise bianco: 0.94
+  \item Tanh drive 20: 0.22
+  \item FM indice 10: 0.55
+  \item Mix sin 50\% + noise 50\%: 0.23
+  \item Clarinetto contrabbasso piano $\to$ forte: 0.20 $\to$ 0.33
+  \item Timpano tenuto: 0.13; attacchi: 0.29--0.32
+\end{itemize}
+
+\rif Shen, Hung, Lee (1998); Misra et al.\ (2004), \emph{IEEE ICASSP}.
+
+\bigskip
+\noindent\textit{Nota di revisione}: ha sostituito il \emph{coefficiente
+di tonalità} in famiglia Distribuzione (riorganizzazione 5+5+3+3 del
+17/04). Il tonality coefficient è ora in famiglia Tonalità.
+
+
+% ============================================================
+\section{Tonalità}
+% ============================================================
+
+Questi descrittori misurano quanto il segnale è \emph{periodico}
+(tonale) rispetto a \emph{casuale} (rumoroso).
+
+% ---
+\desc{Rapporto di potenza tonale (\emph{tonal power ratio}, TPR)}
+
+\formula
+\begin{enumerate}[nosep]
+  \item Si calcola la potenza $P(k) = X(k)^2$
+  \item Si trovano i picchi (massimi locali) con \texttt{scipy.signal.find\_peaks},
+        parametro \emph{distance} = 3, \emph{prominence} $> 0$
+  \item Si filtra per prominenza: solo picchi con prominenza sopra la mediana
+  \item Per ogni picco si somma la potenza del lobo principale ($\pm 2$ bin)
+  \item $\text{TPR} = \frac{\text{potenza dei picchi}}{\text{potenza totale}}$
+\end{enumerate}
+
+\ascolta
+La \textbf{frazione di energia} concentrata in picchi spettrali prominenti.
+Alto per segnali tonali (tutta l'energia è in picchi), basso per noise
+(l'energia è distribuita uniformemente, pochi picchi emergono).
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: 1.00
+  \item Noise bianco: 0.76
+  \item Mix sin 50\% + noise 50\%: 0.98
+  \item Mix sin 25\% + noise 75\%: 0.90
+\end{itemize}
+
+\oss Con l'implementazione basata sulla prominenza, il TPR va da 0.76
+(noise) a 1.00 (sinusoide), con un range più ampio della versione
+precedente (0.40--0.60). Resta però poco discriminante per segnali
+che hanno comunque dei picchi (la tanh ha sempre TPR $\approx 1$).
+
+\rif Lerch (2023, sez.~3.5.11), pyACA (Lerch, implementazione di riferimento).
+
+% ---
+\desc{Numero di picchi spettrali}
+
+\formula
+Conteggio dei picchi trovati dall'algoritmo TPR (prominenza $>$ mediana,
+distanza $\geq 3$ bin).
+
+\ascolta
+La \textbf{complessità spettrale}: quanti picchi distinti emergono dallo
+spettro. Un segnale con poche armoniche forti ha pochi picchi prominenti,
+un noise ne ha molti (casuali).
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: $\sim$76
+  \item Noise bianco: $\sim$96
+  \item Tanh drive 1: $\sim$70
+  \item Tanh drive 20: $\sim$22
+  \item FM indice 10: $\sim$23
+  \item 2 sinusoidi 200+4000 Hz: $\sim$27
+\end{itemize}
+
+\oss Il conteggio è inversamente correlato alla complessità armonica:
+la tanh drive 20 ha \emph{meno} picchi (22) della sinusoide pura (76)
+perché le armoniche forti alzano la mediana della prominenza, escludendo
+i picchi più deboli. Il noise ha sempre $\sim$96 picchi (il massimo
+nella banda 0--10\,000 Hz).
+
+% ---
+\desc{Coefficiente di tonalità (\emph{tonality coefficient})}
+
+\formula
+\[
+  \text{tonality} = 1 - \text{flatness}
+\]
+con la flatness calcolata come la media geometrica/aritmetica dello
+spettro di potenza (vedi sezione Distribuzione).
+
+\ascolta
+La \textbf{tonalità} dello spettro: alto quando lo spettro è piccato
+(pochi picchi dominanti), basso quando è piatto (rumore). È
+complementare alla flatness ma vive in famiglia Tonalità perché viene
+usato come indicatore di "quanto suona tonale" più che di forma della
+distribuzione.
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 100 Hz: 0.171
+  \item Clarinetto contrabbasso piano (001): 0.152
+  \item Clarinetto contrabbasso forte (004): 0.117
+  \item Noise bianco: $\approx 0$
+\end{itemize}
+
+\rif Peeters (2004, sez.~6.1.7); MPEG-7 Audio (\emph{spectral
+flatness}, da cui deriva).
+
+\bigskip
+\noindent\textit{Nota di revisione}: questa sezione era originariamente
+in famiglia Distribuzione. Spostata in Tonalità con la riorganizzazione
+5+5+3+3 del 17/04 (più affine concettualmente a TPR e n. picchi).
+Sostituisce la sezione \emph{ACF max} (Lerch 3.5.12), descrittore
+rimosso dai 16 al 17/04 perché non separava bene i gesti strumentali
+sul corpus. Scheda d'archivio in \texttt{diario/acf/}.
+
+
+% ============================================================
+\section{Dinamica}
+% ============================================================
+
+Questi descrittori misurano il \emph{cambiamento} del segnale nel tempo.
+
+% ---
+\desc{Flusso spettrale (\emph{spectral flux})}
+
+\formula
+\[
+  \text{flux}(n) = \sum_{k=0}^{N-1} \big| X_n(k) - X_{n-L}(k) \big|
+\]
+dove $n$ è il frame corrente e $L$ è il \emph{lag} (default 1 = frame
+consecutivi).
+
+\ascolta
+La \textbf{quantità di cambiamento spettrale} tra frame. Alto quando lo
+spettro cambia rapidamente (noise, glissando veloce), basso per segnali
+stazionari (sinusoide costante).
+
+Il parametro \emph{lag} permette di regolare la scala temporale:
+con lag~1 ($\sim$43~ms) si cattura il microcambiamento, con lag~8
+($\sim$341~ms) si catturano transizioni timbriche più lente.
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: $\sim$0 (stazionaria)
+  \item Noise bianco: 1.30 (cambia continuamente)
+  \item Glissando lento: 0.25 (cambiamento moderato)
+  \item Glissando veloce: 0.65 (cambiamento rapido)
+  \item Tanh drive crescente (10 s): 0.004 (transizione timbrica lenta)
+\end{itemize}
+
+\oss Il flux è molto sensibile allo spostamento in frequenza (glissando)
+ma poco al cambiamento timbrale graduale (tanh, FM). La tanh drive
+crescente ha flux quasi zero perché le armoniche si aggiungono
+lentamente e la fondamentale resta ferma. Con lag~8 la FM veloce
+raggiunge 0.85, confrontabile col glissando lento (0.84).
+
+\rif Peeters (2003, sez.~6.2.1 ``spectral variation''), Lerch (2023, sez.~3.5.8).
+
+% ---
+\desc{Irregolarità spettrale (\emph{spectral irregularity})}
+
+\formula
+\[
+  \text{irregularity} = \sum_{k=0}^{N-2} \big| \ln X(k) - \ln X(k+1) \big|
+\]
+
+\ascolta
+La \textbf{frastagliatura} dello spettro: la somma delle differenze
+logaritmiche tra bin consecutive. Alta quando lo spettro ha molte
+transizioni brusche (noise, con bin alte e basse alternate), bassa
+per spettri lisci (sinusoide, poche armoniche isolate).
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: 29
+  \item Noise bianco: 2\,671
+  \item Tanh drive 20: 276
+  \item FM indice 10: 704
+  \item 2 sinusoidi: $\sim$55
+\end{itemize}
+
+\oss L'irregolarità è proporzionale al numero di transizioni nel log-spettro.
+Due sinusoidi (55) hanno circa il doppio dell'irregolarità di una sola (29),
+perché raddoppiano i salti nel log-spettro.
+
+\rif Park (2004), Krimphoff et al.\ (1994).
+
+% ---
+\desc{Tasso di attraversamento dello zero (\emph{zero crossing rate}, ZCR)}
+
+\formula
+\[
+  \text{ZCR} = \frac{1}{N-1} \sum_{n=1}^{N-1}
+    \mathbb{1}\!\big[\text{sign}(x(n)) \neq \text{sign}(x(n-1))\big]
+\]
+dove $x(n)$ è il segnale nel dominio del tempo.
+
+\ascolta
+La \textbf{frequenza media approssimativa} del segnale nel dominio del
+tempo. Una sinusoide a frequenza $f$ con sample rate $f_s$ ha
+$\text{ZCR} = 2f/f_s$. Il noise bianco ha ZCR $\approx 0.5$
+(attraversa lo zero circa metà dei campioni).
+
+\range
+\begin{itemize}[nosep]
+  \item Sinusoide 440 Hz: 0.010 ($= 2 \times 440 / 96000$)
+  \item Noise bianco: 0.499
+  \item Tanh drive 20: 0.010 (stessa $f_0$, la distorsione non cambia lo ZCR)
+  \item FM indice 10: 0.092 (frequenza istantanea varia)
+  \item Noise BP Q=50: 0.028
+\end{itemize}
+
+\oss Lo ZCR è un descrittore del dominio del tempo, non spettrale.
+Discrimina bene tra segnali a bassa e alta frequenza, e tra periodici
+e aperiodici. La tanh non cambia lo ZCR perché non sposta la
+fondamentale, solo aggiunge armoniche.
+
+\rif Lerch (2023, sez.~3.5.13).
+
+
+% ============================================================
+\section{Tabella riassuntiva}
+% ============================================================
+
+La tabella seguente riporta i valori medi di tutti i 16 descrittori
+per una selezione di segnali di test (analisi limitata a 0--10\,000 Hz).
+
+\noindent\textit{Nota di revisione (17/04--19/04)}: la tabella è in
+attesa di rigenerazione dopo la sostituzione \emph{decrease} →
+\emph{OBSIR-std} (Forma) e \emph{ACF max} → \emph{spectral entropy}
+(Distribuzione), e lo spostamento del coefficiente di tonalità in
+famiglia Tonalità. La sorgente macchina si trova in
+\texttt{analisi/tabelle/segnali\_tabelle.md} dopo \texttt{make}.
+
+{
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{l|rrrrr|rrrrr|rrr|rrr}
+\toprule
+& \multicolumn{5}{c|}{\textbf{Forma}} & \multicolumn{5}{c|}{\textbf{Distribuzione}} & \multicolumn{3}{c|}{\textbf{Tonalità}} & \multicolumn{3}{c}{\textbf{Dinamica}} \\
+\textbf{Segnale}
+& \rotatebox{90}{Centroid}
+& \rotatebox{90}{Spread}
+& \rotatebox{90}{Rolloff}
+& \rotatebox{90}{Slope}
+& \rotatebox{90}{OBSIR-std}
+& \rotatebox{90}{Flatness}
+& \rotatebox{90}{Crest}
+& \rotatebox{90}{Skewness}
+& \rotatebox{90}{Kurtosis}
+& \rotatebox{90}{Entropy}
+& \rotatebox{90}{TPR}
+& \rotatebox{90}{N.~picchi}
+& \rotatebox{90}{Tonality}
+& \rotatebox{90}{Flux}
+& \rotatebox{90}{Irregularity}
+& \rotatebox{90}{ZCR} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Segnale} & \multicolumn{5}{c|}{\textbf{Forma}} & \multicolumn{5}{c|}{\textbf{Distribuz.}} & \multicolumn{3}{c|}{\textbf{Tonal.}} & \multicolumn{3}{c}{\textbf{Dinam.}} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+
+Sin 440
+& 440 & 10 & 445 & $\sim$0 & 4.3
+& .28 & 3.3 & 0.0 & 1.5 & .13
+& 1.00 & 76 & .093
+& 0.0 & 29 & .010 \\
+
+Noise
+& 5000 & 2888 & 8512 & $\sim$0 & .14
+& .94 & 2.5 & 0.0 & $-$1.2 & .94
+& .76 & 96 & .005
+& 1.30 & 2671 & .499 \\
+
+Tanh d.1
+& 476 & 174 & 445 & $\sim$0 & 3.4
+& .27 & 4.4 & 4.6 & 19.5 & .13
+& 1.00 & 70 & .094
+& 0.0 & 51 & .010 \\
+
+Tanh d.5
+& 918 & 872 & 1336 & $\sim$0 & 2.3
+& .29 & 8.0 & 2.3 & 5.5 & .18
+& 1.00 & 45 & .090
+& 0.0 & 169 & .010 \\
+
+Tanh d.20
+& 1876 & 2110 & 3961 & $\sim$0 & 2.0
+& .40 & 9.4 & 1.7 & 2.2 & .22
+& 1.00 & 22 & .067
+& 0.0 & 276 & .010 \\
+
+\midrule
+
+Noise BP 500
+& 2486 & 2066 & 4684 & $\sim$0 & .75
+& .71 & 7.7 & 1.5 & 1.6 & .73
+& 1.00 & 96 & .025
+& 1.69 & 2229 & .062 \\
+
+Noise BP 200
+& 1803 & 1420 & 3058 & $\sim$0 & .97
+& .65 & 9.8 & 2.1 & 4.7 & .62
+& 1.00 & 96 & .032
+& 1.25 & 1683 & .042 \\
+
+Noise BP 50
+& 1288 & 677 & 1788 & $\sim$0 & 1.3
+& .57 & 12.2 & 2.4 & 7.4 & .46
+& .99 & 96 & .040
+& .78 & 924 & .028 \\
+
+\midrule
+
+FM 0.5
+& 545 & 323 & 1090 & $\sim$0 & 3.0
+& .35 & 5.9 & 1.7 & 2.5 & .20
+& 1.00 & 77 & .075
+& 0.0 & 125 & .009 \\
+
+FM 3
+& 1422 & 864 & 2414 & $\sim$0 & 2.8
+& .44 & 4.3 & 0.6 & $-$0.1 & .42
+& 1.00 & 58 & .060
+& 0.0 & 322 & .028 \\
+
+FM 10
+& 4283 & 2238 & 6398 & $\sim$0 & .75
+& .55 & 3.6 & $-$0.2 & $-$1.0 & .55
+& 1.00 & 23 & .043
+& 0.0 & 704 & .092 \\
+
+\midrule
+
+Sin+N 75/25
+& 701 & 1231 & 453 & $\sim$0 & 2.1
+& .20 & 8.1 & 5.6 & 33.8 & .14
+& 1.00 & 96 & .117
+& .04 & 237 & .057 \\
+
+Sin+N 50/50
+& 3671 & 3193 & 7884 & $\sim$0 & 1.6
+& .74 & 36.9 & 0.5 & $-$1.2 & .23
+& .98 & 96 & .022
+& .70 & 2703 & .179 \\
+
+Sin+N 25/75
+& 4631 & 3027 & 8350 & $\sim$0 & .98
+& .90 & 19.0 & 0.1 & $-$1.3 & .58
+& .90 & 96 & .008
+& 1.08 & 3176 & .454 \\
+
+\midrule
+
+Gliss lento
+& 1098 & 11 & 1109 & $\sim$0 & 5.5
+& .33 & 3.2 & 0.0 & 0.9 & .14
+& 1.00 & 89 & .080
+& .25 & 29 & .023 \\
+
+Gliss vel.
+& 1096 & 16 & 1111 & $\sim$0 & 5.3
+& .39 & 3.3 & 0.0 & 0.7 & .18
+& .99 & 86 & .067
+& .65 & 29 & .023 \\
+
+\midrule
+
+2 sin 200+4k
+& 2131 & 1900 & 4008 & $\sim$0 & 8.4
+& .42 & 2.4 & 0.0 & $-$2.0 & .23
+& 1.00 & 27 & .062
+& 0.0 & 55 & .091 \\
+
+2 sin 400+1k
+& 703 & 300 & 1008 & $\sim$0 & 3.9
+& .40 & 2.6 & 0.0 & $-$2.0 & .23
+& 1.00 & 26 & .066
+& 0.0 & 55 & .029 \\
+
+\midrule
+
+Tanh cresc
+& 1346 & 1446 & 2678 & $\sim$0 & 2.1
+& .34 & 8.7 & 2.1 & 4.5 & .20
+& 1.00 & 55 & .079
+& .004 & 226 & .010 \\
+
+FM cresc
+& 2339 & 1303 & 3704 & $\sim$0 & 1.9
+& .50 & 3.9 & 0.3 & $-$0.4 & .45
+& 1.00 & 53 & .051
+& .04 & 443 & .046 \\
+
+\end{longtable}
+}
+
+
+% ============================================================
+\section{Quale descrittore per cosa?}
+% ============================================================
+
+\subsection{Riconoscere la brillantezza}
+Il \textbf{centroide} è il descrittore principale. Il \textbf{rolloff}
+lo complementa indicando il confine superiore dello spettro.
+
+\subsection{Riconoscere la ricchezza armonica}
+Lo \textbf{spread} è il più sensibile: segue la distorsione
+(tanh drive 1: 174 Hz $\to$ drive 20: 2\,110 Hz) e la distanza
+tra componenti. La \textbf{kurtosis} complementa con la forma:
+alta per poche armoniche (19.5), bassa per molte ($-1.0$).
+
+\subsection{Distinguere tonale da rumoroso}
+La \textbf{spectral entropy} dà la misura più graduata e con range
+ampio (0.13 sinusoide $\to$ 0.94 noise), senza saturare nella zona di
+mezzo dove vivono i segnali armonici complessi (FM e tanh fra 0.2 e
+0.6). La \textbf{flatness} è complementare ma satura sui casi estremi
+(0.945 sul bin esatto, 0.99 sul noise). Il \textbf{coefficiente di
+tonalità} (in famiglia Tonalità) è $1 - \text{flatness}$ riscritta in
+chiave tonale. Il \textbf{TPR} discrimina bene sui segnali a picchi
+prominenti, lo \textbf{ZCR} conferma nel dominio del tempo.
+
+\subsection{Catturare il cambiamento}
+Il \textbf{flux} misura il cambiamento spettrale tra frame, con la
+possibilità di regolare la scala temporale tramite il parametro lag.
+Lo \textbf{ZCR} cattura cambiamenti nella frequenza fondamentale.
+
+\subsection{Leggere il decadimento spettrale}
+Lo \textbf{slope} dà la pendenza media (informazione globale, può
+essere rumorosa frame-per-frame). L'\textbf{OBSIR-std} misura quanto
+il decadimento è non uniforme fra ottave: complementare allo slope,
+sale quando alcune bande "saltano" rispetto alle adiacenti (risonanze
+o buchi).
+
+\subsection{Descrittori archiviati}
+Lo \textbf{spectral decrease} (Peeters 2004 / Lerch 3.5.5) e l'\textbf{ACF
+max} (Lerch 3.5.12) sono stati rimossi dai 16: il primo per ridondanza
+con lo slope (Timbre Toolbox 2011), il secondo perché non separava
+bene i gesti strumentali sul corpus. Le schede d'archivio restano in
+\texttt{diario/decrease/} e \texttt{diario/acf/} come riferimento storico.
+
+\end{document}

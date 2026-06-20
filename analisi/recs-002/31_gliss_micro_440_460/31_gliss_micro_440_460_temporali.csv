@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+31_gliss_micro_440_460.wav,10.0,234,234,4.149,0.417,1664.0,8277.3,3,0.007544,0.014038,8.5

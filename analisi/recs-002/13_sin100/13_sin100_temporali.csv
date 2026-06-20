@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+13_sin100.wav,5.0,117,117,2.473,0.5,2304.0,2645.3,16,0.007126,0.010296,4.2

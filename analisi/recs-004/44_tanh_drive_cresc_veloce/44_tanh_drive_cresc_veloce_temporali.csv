@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+44_tanh_drive_cresc_veloce.wav,3.0,70,70,1.726,0.586,1152.0,128.0,3,0.006376,0.007588,14.9

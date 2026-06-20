@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+14_sin75_noise25.wav,5.0,117,117,2.006,0.405,554.7,4394.7,7,0.005789,0.014566,9.6

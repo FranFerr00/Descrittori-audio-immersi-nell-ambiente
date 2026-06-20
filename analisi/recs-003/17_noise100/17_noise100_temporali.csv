@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+17_noise100.wav,5.0,117,117,2.479,0.501,213.3,4736.0,23,0.001396,0.002234,5.5

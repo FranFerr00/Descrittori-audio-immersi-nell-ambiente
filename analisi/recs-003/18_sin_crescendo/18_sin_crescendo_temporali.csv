@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+18_sin_crescendo.wav,5.0,117,117,3.215,0.65,4437.3,341.3,34,0.001118,0.002439,19.6

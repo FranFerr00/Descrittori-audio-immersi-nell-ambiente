@@ -1,0 +1,104 @@
+\babel@toc {italian}{}\relax 
+\babel@toc {italian}{}\relax 
+\contentsline {section}{\numberline {1}Introduzione}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Notazione}{2}{subsection.1.1}%
+\contentsline {section}{\numberline {2}Forma dello spettro}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Centroide spettrale (\emph {spectral centroid})}{2}{subsection.2.1}%
+\contentsline {paragraph}{Formula.}{2}{section*.2}%
+\contentsline {paragraph}{Cosa ascolta.}{2}{section*.3}%
+\contentsline {paragraph}{Valori tipici.}{2}{section*.4}%
+\contentsline {paragraph}{Riferimenti.}{3}{section*.5}%
+\contentsline {subsection}{\numberline {2.2}Spread spettrale (\emph {spectral spread})}{3}{subsection.2.2}%
+\contentsline {paragraph}{Formula.}{3}{section*.6}%
+\contentsline {paragraph}{Cosa ascolta.}{3}{section*.7}%
+\contentsline {paragraph}{Valori tipici.}{3}{section*.8}%
+\contentsline {paragraph}{Osservazioni dai test.}{3}{section*.9}%
+\contentsline {paragraph}{Riferimenti.}{3}{section*.10}%
+\contentsline {subsection}{\numberline {2.3}Rolloff spettrale (\emph {spectral rolloff})}{3}{subsection.2.3}%
+\contentsline {paragraph}{Formula.}{3}{section*.11}%
+\contentsline {paragraph}{Cosa ascolta.}{3}{section*.12}%
+\contentsline {paragraph}{Valori tipici.}{3}{section*.13}%
+\contentsline {paragraph}{Riferimenti.}{3}{section*.14}%
+\contentsline {subsection}{\numberline {2.4}Pendenza spettrale (\emph {spectral slope})}{4}{subsection.2.4}%
+\contentsline {paragraph}{Formula.}{4}{section*.15}%
+\contentsline {paragraph}{Cosa ascolta.}{4}{section*.16}%
+\contentsline {paragraph}{Riferimenti.}{4}{section*.17}%
+\contentsline {subsection}{\numberline {2.5}Deviazione del rapporto fra bande ottavali (\emph {OBSIR-std})}{4}{subsection.2.5}%
+\contentsline {paragraph}{Formula.}{4}{section*.18}%
+\contentsline {paragraph}{Cosa ascolta.}{4}{section*.19}%
+\contentsline {paragraph}{Valori tipici.}{4}{section*.20}%
+\contentsline {paragraph}{Riferimenti.}{4}{section*.21}%
+\contentsline {section}{\numberline {3}Distribuzione}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Flatness spettrale (\emph {spectral flatness}, SFM)}{5}{subsection.3.1}%
+\contentsline {paragraph}{Formula.}{5}{section*.22}%
+\contentsline {paragraph}{Cosa ascolta.}{5}{section*.23}%
+\contentsline {paragraph}{Valori tipici.}{5}{section*.24}%
+\contentsline {paragraph}{Osservazioni dai test.}{5}{section*.25}%
+\contentsline {paragraph}{Riferimenti.}{5}{section*.26}%
+\contentsline {subsection}{\numberline {3.2}Crest Factor spettrale (\emph {spectral crest factor})}{5}{subsection.3.2}%
+\contentsline {paragraph}{Formula.}{5}{section*.27}%
+\contentsline {paragraph}{Cosa ascolta.}{5}{section*.28}%
+\contentsline {paragraph}{Valori tipici.}{5}{section*.29}%
+\contentsline {paragraph}{Osservazioni dai test.}{5}{section*.30}%
+\contentsline {paragraph}{Riferimenti.}{6}{section*.31}%
+\contentsline {subsection}{\numberline {3.3}Asimmetria spettrale (\emph {spectral skewness})}{6}{subsection.3.3}%
+\contentsline {paragraph}{Formula.}{6}{section*.32}%
+\contentsline {paragraph}{Cosa ascolta.}{6}{section*.33}%
+\contentsline {paragraph}{Valori tipici.}{6}{section*.34}%
+\contentsline {paragraph}{Osservazioni dai test.}{6}{section*.35}%
+\contentsline {paragraph}{Riferimenti.}{6}{section*.36}%
+\contentsline {subsection}{\numberline {3.4}Curtosi spettrale (\emph {spectral kurtosis})}{6}{subsection.3.4}%
+\contentsline {paragraph}{Formula.}{6}{section*.37}%
+\contentsline {paragraph}{Cosa ascolta.}{6}{section*.38}%
+\contentsline {paragraph}{Valori tipici.}{6}{section*.39}%
+\contentsline {paragraph}{Osservazioni dai test.}{7}{section*.40}%
+\contentsline {paragraph}{Riferimenti.}{7}{section*.41}%
+\contentsline {subsection}{\numberline {3.5}Entropia spettrale (\emph {spectral entropy})}{7}{subsection.3.5}%
+\contentsline {paragraph}{Formula.}{7}{section*.42}%
+\contentsline {paragraph}{Cosa ascolta.}{7}{section*.43}%
+\contentsline {paragraph}{Valori tipici.}{7}{section*.44}%
+\contentsline {paragraph}{Riferimenti.}{7}{section*.45}%
+\contentsline {section}{\numberline {4}Tonalità}{7}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Rapporto di potenza tonale (\emph {tonal power ratio}, TPR)}{7}{subsection.4.1}%
+\contentsline {paragraph}{Formula.}{7}{section*.46}%
+\contentsline {paragraph}{Cosa ascolta.}{8}{section*.47}%
+\contentsline {paragraph}{Valori tipici.}{8}{section*.48}%
+\contentsline {paragraph}{Osservazioni dai test.}{8}{section*.49}%
+\contentsline {paragraph}{Riferimenti.}{8}{section*.50}%
+\contentsline {subsection}{\numberline {4.2}Numero di picchi spettrali}{8}{subsection.4.2}%
+\contentsline {paragraph}{Formula.}{8}{section*.51}%
+\contentsline {paragraph}{Cosa ascolta.}{8}{section*.52}%
+\contentsline {paragraph}{Valori tipici.}{8}{section*.53}%
+\contentsline {paragraph}{Osservazioni dai test.}{8}{section*.54}%
+\contentsline {subsection}{\numberline {4.3}Coefficiente di tonalità (\emph {tonality coefficient})}{8}{subsection.4.3}%
+\contentsline {paragraph}{Formula.}{8}{section*.55}%
+\contentsline {paragraph}{Cosa ascolta.}{8}{section*.56}%
+\contentsline {paragraph}{Valori tipici.}{9}{section*.57}%
+\contentsline {paragraph}{Riferimenti.}{9}{section*.58}%
+\contentsline {section}{\numberline {5}Dinamica}{9}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Flusso spettrale (\emph {spectral flux})}{9}{subsection.5.1}%
+\contentsline {paragraph}{Formula.}{9}{section*.59}%
+\contentsline {paragraph}{Cosa ascolta.}{9}{section*.60}%
+\contentsline {paragraph}{Valori tipici.}{9}{section*.61}%
+\contentsline {paragraph}{Osservazioni dai test.}{9}{section*.62}%
+\contentsline {paragraph}{Riferimenti.}{9}{section*.63}%
+\contentsline {subsection}{\numberline {5.2}Irregolarità spettrale (\emph {spectral irregularity})}{9}{subsection.5.2}%
+\contentsline {paragraph}{Formula.}{9}{section*.64}%
+\contentsline {paragraph}{Cosa ascolta.}{10}{section*.65}%
+\contentsline {paragraph}{Valori tipici.}{10}{section*.66}%
+\contentsline {paragraph}{Osservazioni dai test.}{10}{section*.67}%
+\contentsline {paragraph}{Riferimenti.}{10}{section*.68}%
+\contentsline {subsection}{\numberline {5.3}Tasso di attraversamento dello zero (\emph {zero crossing rate}, ZCR)}{10}{subsection.5.3}%
+\contentsline {paragraph}{Formula.}{10}{section*.69}%
+\contentsline {paragraph}{Cosa ascolta.}{10}{section*.70}%
+\contentsline {paragraph}{Valori tipici.}{10}{section*.71}%
+\contentsline {paragraph}{Osservazioni dai test.}{10}{section*.72}%
+\contentsline {paragraph}{Riferimenti.}{10}{section*.73}%
+\contentsline {section}{\numberline {6}Tabella riassuntiva}{10}{section.6}%
+\contentsline {section}{\numberline {7}Quale descrittore per cosa?}{11}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Riconoscere la brillantezza}{11}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Riconoscere la ricchezza armonica}{11}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Distinguere tonale da rumoroso}{11}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Catturare il cambiamento}{12}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}Leggere il decadimento spettrale}{12}{subsection.7.5}%
+\contentsline {subsection}{\numberline {7.6}Descrittori archiviati}{12}{subsection.7.6}%

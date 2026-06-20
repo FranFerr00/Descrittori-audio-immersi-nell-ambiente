@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+08_noise_bp_q50.wav,5.0,117,117,2.38,0.481,682.7,3456.0,36,0.004906,0.006861,5.0

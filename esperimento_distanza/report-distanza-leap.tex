@@ -1,0 +1,482 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+% \usepackage{siunitx}  % non installato (texlive-mathscience); \, e \text{dB} funzionano senza
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{hyperref}
+
+% PRIMARIO: banda piena (48 kHz) + file intero, in analisi/distanza-banda-piena/.
+% Il 10 kHz (analisi/distanza/) e la finestra 2 s restano solo come confronto.
+\graphicspath{%
+  {../analisi/distanza-banda-piena/livelli/}%
+  {../analisi/distanza-banda-piena/centroide/}%
+  {../analisi/distanza-banda-piena/descrittori/}%
+  {../analisi/distanza-banda-piena/descrittori/noise/}%
+  {img/report/}}
+
+\title{Descrittori audio alla prova della distanza\\
+\large Un esperimento al LEAP: stessa sorgente, otto punti di ripresa}
+\author{}
+\date{Roma, 13 giugno 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Documento di laboratorio. Ho allestito al LEAP una condizione di test per misurare
+quanto la risposta dei descrittori dipenda dal punto di ripresa nello spazio acustico,
+con otto microfoni a distanza crescente (da 1 a 8 metri) dalla stessa sorgente. Il
+centroide spettrale, invariante di scala, fa da sensore principale: se cambia tra un
+microfono e l'altro non è perché il segnale è più debole, ma perché la catena
+fatta di sorgente, ambiente e microfono ne ha deformato la forma. Riporto la procedura, la
+calibrazione, e le discrepanze rilevate sul rumore e sugli strumenti.
+\end{abstract}
+
+\section{Scopo}
+Voglio capire quanto la risposta dei descrittori dipenda dal punto in cui prendo
+il segnale. Nell'uso in tempo reale do per scontato che, fissata la sorgente, i
+descrittori restituiscano lo stesso vettore; ma fra la sorgente e il microfono c'è
+un luogo, con il suo carattere, e una catena di trasduzione. La prova che metto in
+atto è semplice: registro la stessa sorgente con otto microfoni a distanza crescente,
+da 1 a 8 metri, e guardo se la descrizione resta ferma oppure si muove.
+
+Il sensore principale è il centroide spettrale. La sua proprietà utile è che è
+invariante di scala: moltiplicare lo spettro per un guadagno non lo sposta (lo mostro
+nelle note matematiche in appendice). Questo
+lo rende un controllo pulito: se il segnale a 8 metri è più debole che a 1 metro, il
+centroide non se ne accorge. Se invece il centroide cambia da un microfono all'altro,
+non è perché il livello è calato, ma perché la catena sorgente, ambiente e microfono
+ha rimodellato la forma dello spettro. Trovare variazioni significherebbe che il punto
+di ripresa, e non solo la sorgente, entra a pieno titolo nel valore misurato; trovarlo
+piatto vorrebbe dire che il centroide è robusto rispetto al luogo.
+
+\section{Apparato e metodo}
+Ho lavorato al LEAP (Laboratorio ElettroAcustico Permanente, Roma). Per la ripresa ho
+usato otto microfoni omnidirezionali LineAudio OM1. Per la calibrazione li ho prima
+raggruppati con un elastico, capsule equidistanti dalla sorgente, in un unico grappolo:
+in questa posizione ho regolato a mano i gain finché ogni microfono restituiva la stessa
+ampiezza RMS, così da partire da una base comune (figura~\ref{fig:apparato-calibrazione}).
+
+\begin{figure}[ht]
+  \centering
+  \begin{minipage}[b]{0.40\linewidth}\centering
+    \includegraphics[width=\linewidth]{grappolo.jpg}
+  \end{minipage}\hfill
+  \begin{minipage}[b]{0.57\linewidth}\centering
+    \includegraphics[width=\linewidth]{calibrazione.jpg}
+  \end{minipage}
+  \caption{A sinistra il grappolo degli otto microfoni omnidirezionali LineAudio OM1,
+  tenuti insieme con un elastico e capsule affiancate. A destra la geometria di
+  calibrazione: il grappolo posto a 1 m di fronte al diffusore Yamaha HS8, all'altezza
+  mediana fra cono e tweeter, dove ho allineato i gain.}
+  \label{fig:apparato-calibrazione}
+\end{figure}
+
+La sorgente di riferimento era un diffusore Yamaha HS8 su stativo, con i microfoni posti
+all'altezza mediana fra cono e tweeter. La preamplificazione era affidata a un Audient
+ASP880, impedenza su MED, filtri disattivati e gain regolati a mano. Al fonometro ho
+letto 96 dBA (curva A) a 1 metro; ho registrato a 96 kHz, otto canali simultanei.
+
+Per la prova vera e propria ho disposto i microfoni in fila a distanza crescente, uno
+per metro: il canale $n$ a $n$ metri (ch1 a 1 m fino a ch8 a 8 m), passo costante di un
+metro. Per ogni presa ho registrato due orientamenti della capsula: orizzontale, con la
+capsula rivolta verso la sorgente, e verticale, con la capsula rivolta verso l'alto,
+ortogonale alla direzione del suono. Lo scopo della doppia ripresa è separare due cause
+che altrimenti si confonderebbero: la fisica della propagazione, che è la stessa nei due
+orientamenti, e la direttività dell'OM1, che ai medio-acuti smette di comportarsi da
+omnidirezionale e sposta la sensibilità verso il fronte. Se un effetto compare in
+entrambi gli orientamenti non può essere della direttività del microfono; se cambia
+ruotando le capsule, lo è.
+
+Le sorgenti sono state tre. Il rumore rosa dal diffusore, come segnale di prova
+controllato e ripetibile. Il clarinetto contrabbasso (Do grave a tubo chiuso e cluster),
+suonato sia con il trombino originale svasato sia con un trombino custom verticale che
+ho chiamato PETALONIO. Infine il clarinetto soprano (cluster)
+(figura~\ref{fig:apparato-sessione}).
+
+\begin{figure}[ht]
+  \centering
+  \begin{minipage}[b]{0.47\linewidth}\centering
+    \includegraphics[width=\linewidth]{fonometro.jpg}
+  \end{minipage}\hfill
+  \begin{minipage}[b]{0.50\linewidth}\centering
+    \includegraphics[width=\linewidth]{petalonio.jpg}
+  \end{minipage}
+  \caption{A sinistra il fonometro durante la lettura del livello a 1 m (96 dBA, curva A).
+  A destra la sessione con il clarinetto contrabbasso: il trombino verticale PETALONIO
+  rivolto verso l'alto e la fila delle aste microfoniche che si allontana nello spazio
+  acustico.}
+  \label{fig:apparato-sessione}
+\end{figure}
+
+\section{Pipeline d'analisi}
+Ho analizzato i segnali con \texttt{scripts/analisi.py}. La trasformata usa una finestra
+di Hann lunga 8192 campioni con passo 4096 (sovrapposizione del 50\%); a 96 kHz questo
+corrisponde a frame di circa 85 ms e a una risoluzione in frequenza di circa 11,7 Hz per
+bin. Analizzo l'intera banda fino a 48 kHz (la frequenza di Nyquist a 96 kHz). Un tetto a
+10 kHz, usato in una prima versione, lo tengo ora solo come termine di confronto: serve a
+mostrare cosa si perde tagliando gli acuti (vedi §\ref{sec:rumore}).
+
+Per escludere il rumore di fondo dello luogo ho applicato due gate: uno assoluto a
+$-65$ dBFS e uno relativo a $-30$ dB rispetto al frame più forte. Ho analizzato ogni
+microfono separatamente, senza mediarli (opzione \texttt{-{}-per-canale}), perché è
+proprio la differenza fra un canale e l'altro che mi interessa leggere. Su ciascun campione
+medio i descrittori su tutta la parte attiva del segnale (i frame che superano i gate, non il
+silenzio): uso il file intero, non una finestra corta. In una prima versione avevo usato una
+finestra di 2 s; la tengo come confronto, ma i numeri qui sono sull'intero.
+
+Da ogni frame estraggo i 16 descrittori, raggruppati in quattro famiglie: forma
+(centroide, spread, rolloff, slope, obsir-std), distribuzione (flatness, crest, skewness,
+kurtosis, entropy), tonalità (tpr, numero di picchi, tonality) e dinamica (flux,
+irregularity, zcr). Gli output (CSV e figure) sono rigenerabili in
+\texttt{analisi/distanza/}, in sottocartelle per tema (centroide, descrittori, livelli).
+
+\section{Calibrazione: quanto è riuscito l'allineamento dei gain}
+Prima di leggere qualunque differenza sulla distanza devo sapere quanto bene sono partiti
+allineati i microfoni. Ho misurato l'RMS di ciascuno sul grappolo a 1 m, dove le capsule
+erano equidistanti dalla sorgente e dovevano restituire lo stesso livello. La dispersione
+è piccola: la deviazione standard fra i microfoni è di 0,17 dB e lo scarto fra il più alto
+e il più basso (max-min) è di 0,58 dB. Per canale, lo scarto dalla media va da $-0{,}34$ dB
+(ch5) a $+0{,}24$ dB (ch6); gli altri stanno sotto i due decimi di decibel
+(figura~\ref{fig:calibrazione}).
+
+La taratura a mano, insomma, è riuscita molto bene. La conseguenza pratica è importante:
+ogni differenza per-canale che superi circa 0,6 dB sui segnali successivi è un fatto reale,
+non un residuo di calibrazione. Questa è la mia soglia di leggibilità, il fondo sotto il
+quale non mi fido di nessuna differenza.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\linewidth]{calibrazione_rms.png}
+  \caption{Scarto dell'RMS di ciascun microfono dalla media, sul grappolo a 1 m:
+  misura della bonta' dell'allineamento dei gain regolati a mano.}
+  \label{fig:calibrazione}
+\end{figure}
+
+\section{Il rumore sulla distanza}\label{sec:rumore}
+Comincio dal rumore rosa, il segnale più controllato. Due cose mi interessano: come cala
+il livello con la distanza, e se il centroide si sposta.
+
+\paragraph{Attenuazione del livello.} Riferito al microfono a 1 m, il livello cala con la
+distanza molto meno di quanto vorrebbe il campo libero (figura~\ref{fig:attenuazione}). In
+orizzontale misuro $-4{,}6$ dB a 2 m, $-6{,}7$ a 4 m, fino a $-8{,}6$ dB a 8 m; in verticale
+i numeri sono più piccoli ($-3{,}3$ a 2 m, $-6{,}7$ a 8 m). Il campo libero di una sorgente
+puntiforme darebbe $-6$ dB a ogni raddoppio, cioè $-18$ dB a 8 m, molto più di quanto misuro.
+La legge della sala è un'altra, più dolce: circa $-3$ dB a ogni raddoppio, cioè un'ampiezza
+che si riduce di $1/\sqrt{2}$ ogni volta che la distanza raddoppia. Mediato sui tre raddoppi,
+il mio dato orizzontale fa $-2{,}9$ dB a raddoppio, vicinissimo a quel $-3$.
+
+E qui ho una conferma indipendente. Durante la registrazione ho letto il livello anche al
+fonometro (curva A): 96 dBA a 1 m, 93 a 2 m, 90 a 4 m, 87 a 8 m, cioè esattamente $-3$ dB a
+ogni raddoppio. Due strumenti diversi, la misura digitale per canale e il fonometro in sala,
+danno la stessa legge: il LEAP, sala reale e riverberante, attenua il rumore come
+$1/\sqrt{r}$ ($-3$ dB per raddoppio), non come il campo libero $1/r$ ($-6$ dB). Il campo
+riverberante riempie lo spazio e ammorbidisce la caduta. Nella figura i punti del fonometro
+cadono sulla retta di $-3$ dB e le curve misurate le stanno attorno, ben sopra il campo libero.
+
+\paragraph{Centroide del rumore.} Il centroide del rumore cala nettamente con la distanza
+(figura~\ref{fig:centroide-noise}). In orizzontale scende da circa 9000 Hz a 1 m a 5700 Hz
+a 8 m, oltre il 30\% in meno; in verticale da 6300 a 5000 Hz. È l'assorbimento dell'aria
+sugli acuti: l'aria assorbe le alte frequenze tanto più quanto è lungo il cammino, così i
+microfoni lontani ricevono uno spettro più povero di acuti e il loro centroide è più grave.
+La doppia ripresa lo conferma: in orizzontale il centroide parte molto più alto che in
+verticale (circa 9000 contro 6300 Hz a 1 m), perché la direttività dell'OM1, un fenomeno di
+alta frequenza, fa sì che la capsula rivolta verso la sorgente raccolga più acuti.
+
+\paragraph{Il confronto col tetto a 10 kHz.} Questa caduta si vede solo guardando tutta la
+banda. Se limito l'analisi a 10 kHz (come in una prima versione, e come nei descrittori
+monolitici usati in tempo reale), il centroide del rumore appare quasi piatto, fra 3300 e
+3600 Hz, e l'assorbimento dell'aria sparisce (figura~\ref{fig:banda}). Il motivo è che
+l'aria agisce soprattutto sopra i 10 kHz: tutto l'effetto della distanza sta nella banda che
+il tetto tagliava via. Il tetto a 10 kHz non toglieva segnale inutile, toglieva la firma
+della distanza. Sul contrabbasso, invece, le due bande danno quasi lo stesso centroide (lo
+strumento ha poca energia sopra i 10 kHz) e l'onda nodo/ventre resta identica: è un fenomeno
+della fondamentale, non degli acuti.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\linewidth]{attenuazione_distanza.png}
+  \caption{Livello del rumore relativo al microfono a 1 m in funzione della distanza (scala
+  log), orizzontale e verticale. I quadrati sono la misura al fonometro in sala; le rette di
+  riferimento sono il campo libero ($-6$\,dB per raddoppio) e la legge $1/\sqrt{2}$
+  ($-3$\,dB per raddoppio). Misura e fonometro seguono quest'ultima.}
+  \label{fig:attenuazione}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\linewidth]{centroidi_medie_noise.png}
+  \caption{Centroide spettrale medio del rumore per canale (distanza), media sul file intero,
+  a banda piena: cala con la distanza (assorbimento dell'aria sugli acuti).}
+  \label{fig:centroide-noise}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{centroide_rumore_banda.png}
+  \caption{Centroide del rumore in funzione della distanza, a 10 kHz (tratteggio) e a banda
+  piena fino a 48 kHz (continuo). Dentro i 10 kHz il centroide è piatto; a banda piena cala
+  nettamente con la distanza, l'assorbimento dell'aria sugli acuti che il tetto nascondeva.}
+  \label{fig:banda}
+\end{figure}
+
+\paragraph{Gli altri descrittori sul rumore.} La distanza non la legge solo il centroide:
+quasi tutti i quindici descrittori si muovono con essa, e nello stesso modo in orizzontale e
+in verticale (figura~\ref{fig:noise-descrittori}). Il segnale lontano diventa più ``a picchi''
+e più tonale. Il crest factor sale forte (da circa 18 a 1 m a circa 32 a 8 m), il tonal power
+ratio cresce (da circa $-6$ a $-4$ dB), il numero di picchi passa da 148 a 171, mentre
+flatness ed entropy calano. Diventa anche più stazionario: il flux crolla a circa un quarto
+(da 0,7 a 0,18). E soprattutto perde gli acuti: zcr e rolloff scendono nettamente (il rolloff
+da circa 18 a 11,5 kHz), in linea con il forte calo del centroide. La lettura è coerente:
+allontanandosi, l'aria toglie gli acuti a banda larga e resta soprattutto la parte bassa e le
+risonanze del luogo, così il rumore lontano è più scuro, più risonante e più fermo. La firma
+della distanza è scritta in tutto il vettore, non nel solo centroide.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{medie_noise.png}
+  \caption{I sedici descrittori del rumore in funzione della distanza (canale = metri),
+  per famiglia, nelle due riprese orizzontale e verticale. Crest, tonal power ratio, numero
+  di picchi salgono con la distanza; centroide, rolloff, flatness, entropy, flux, zcr
+  scendono.}
+  \label{fig:noise-descrittori}
+\end{figure}
+
+\section{Il centroide sugli strumenti}
+Sugli strumenti il quadro cambia. Sul clarinetto contrabbasso il centroide disegna
+un'onda netta lungo i microfoni (figure~\ref{fig:profilo-onda} e~\ref{fig:heatmap}):
+non scende in modo regolare con la distanza, ma cresce fino a una cresta al microfono a
+3 m (circa $+220$/$+285$ Hz sopra la media del file), poi cala fino a un avvallamento al
+microfono a 6 m (circa $-160$/$-190$ Hz), per risalire all'estremo. In numeri assoluti il
+centroide del contrabbasso passa da circa 1300 Hz a 1 m a un massimo di circa 1600 Hz a
+3 m, scende verso 1180 Hz a 6 m e torna sopra i 1360 Hz a 8 m. Per questi profili uso i soli
+cluster e lascio fuori il Do, una nota sola che riprendo fra i gesti.
+
+La cosa più solida è che l'onda è quasi identica in orizzontale e in verticale: ruotando
+le capsule la forma non cambia. Questo esclude che sia principalmente un effetto della
+direttività del microfono, che cambierebbe con l'orientamento; è qualcosa che sta nella
+propagazione e nel luogo. I due gruppi del contrabbasso in orizzontale, registrati con il
+trombino originale e con il PETALONIO, si comportano in modo simile fra loro; senza dati
+separati non spingo oltre il confronto fra le due campane.
+
+Sul clarinetto soprano l'onda non c'è: il profilo per-canale resta sostanzialmente piatto,
+entro circa $\pm 80$ Hz attorno a una media di circa 1740 Hz. Quindi la struttura
+per-canale non è una proprietà fissa del luogo o della catena, ma dipende dalla sorgente.
+Il soprano ha, come atteso, un centroide più alto del contrabbasso (circa 1740 Hz contro
+un valore fra 1180 e 1600 Hz). Quest'onda nasce da un'onda stazionaria nello spazio
+acustico (se sia un modo fisso della stanza o una figura legata alla posizione dello
+strumento resta da chiarire, e lo riprendo nella discussione).
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{profilo_onda_separati.png}
+  \caption{Profilo per canale del centroide, deviazione media dalla media del file, su tre
+  pannelli a scala verticale condivisa, soli cluster: contrabbasso orizzontale, contrabbasso
+  verticale e soprano. Sul contrabbasso la stessa onda nelle due riprese (cresta al microfono
+  a 3 m, avvallamento a quello a 6 m); sul soprano resta piatto.}
+  \label{fig:profilo-onda}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\linewidth]{centroidi_heatmap.png}
+  \caption{Deviazione del centroide dalla media del file, per canale, su tutti i campioni
+  (media sul file intero; i Do sull'intera nota).}
+  \label{fig:heatmap}
+\end{figure}
+
+\section{Comportamento dei descrittori}
+Il centroide è stato il protagonista, ma sedici descrittori non sono sedici doppioni.
+Ho guardato come ciascuno si comporta sui fattori dell'esperimento: la distanza, il gesto
+(Do grave o cluster), la campana, la sorgente e l'orientamento della capsula. La cosa che
+emerge è che ogni descrittore ha un suo profilo di sensibilità: nessuno vede tutto, e si
+dividono il lavoro. Comincio da quelli legati al centroide.
+
+\paragraph{Distanza: chi porta l'onda.} Per misurare quanti descrittori condividono l'onda
+nodo/ventre del centroide ho correlato, sul contrabbasso, il profilo per canale di ognuno
+con quello del centroide (figura~\ref{fig:correlazioni}). Sui cluster la portano in dodici,
+centroide compreso. In fase con il centroide (più acuti al nodo) stanno zcr, rolloff,
+skewness, entropy, spread, irregularity e tonality, con correlazioni fra 0,92 e 0,98; in
+opposizione stanno tpr, flatness, slope e crest (da $-0{,}82$ a $-0{,}96$): dove la
+fondamentale è debole questi misurano meno dominanza tonale e meno picco. Restano fuori
+kurtosis, flux, obsir-std e numero di picchi (correlazione sotto 0,5 in modulo). La lettura è semplice: il nodo e il ventre sono un'unica leva, la forza della
+fondamentale, e tutto ciò che pesa l'equilibrio fra fondamentale e resto si muove insieme.
+Per questo l'onda taglia di traverso le quattro famiglie: dentro la forma il centroide la
+porta ma obsir-std no, dentro la dinamica zcr e irregularity la portano ma flux no. La domanda
+giusta non è a quale famiglia appartiene un descrittore, ma se risponde o no alla fondamentale.
+
+\paragraph{Gesto: dal Do al cluster.} Passare dalla nota singola al cluster muove quasi tutti
+i descrittori nello stesso verso. Il cluster è più brillante (centroide da 952 a 1310 Hz sul
+PETALONIO, rolloff da 1670 a 2210 Hz, zcr quasi raddoppiato), più denso (numero di picchi da
+140 a 151, obsir-std da 0,64 a 1,6, flux più che doppio) e meno dominato da un singolo picco
+(crest da 47 a 40, kurtosis da 25 a 13, skewness in calo). È una segnatura coerente del gesto,
+leggibile su gran parte del vettore.
+
+\paragraph{Campana: il caso della kurtosis.} Sul Do tenuto la campana lascia un segno reale:
+il PETALONIO è più scuro e più appuntito del trombino (centroide del Do 952 contro 1250 Hz,
+rolloff 1670 contro 2360 Hz). Il caso più vistoso è la kurtosis (figura~\ref{fig:kurtosis-do}).
+Sul Do, in orizzontale, il PETALONIO la fa esplodere al ventre: da 21 al nodo (microfono a
+3 m) a 58 e 61 ai microfoni a 5 e 6 m, circa tre volte tanto. Il trombino resta attorno a
+10, e il PETALONIO in verticale appiattisce l'effetto (attorno a 13). Serve la congiura di tre
+condizioni: la nota singola (sul cluster, con molti picchi, l'effetto svanisce), il ventre
+(dove la fondamentale è forte) e la campana verticale puntata di fronte alla capsula. Sui
+cluster la kurtosis non segue l'onda nodo/ventre (la sua correlazione col centroide è vicina
+a zero): resta indifferente alla distanza. Ma sul Do esplode. Non è dunque un descrittore
+della distanza, è un sensore del gesto e della campana: dorme sui cluster e scatta sul Do,
+dove diventa la spia più forte dell'interazione fra campana, luogo e microfono.
+
+\paragraph{Sorgente: contrabbasso e soprano.} Il clarinetto soprano si stacca dal contrabbasso
+soprattutto in brillantezza e tonalità: centroide attorno a 1740 Hz contro circa 1350,
+rolloff 2820 Hz, slope $-2{,}7$ contro $-5$, e soprattutto tpr
+18 contro circa 6 e numero di picchi 217 contro 155. I salti grandi che si vedono nelle figure
+di famiglia su tpr e numero di picchi sono cambiamenti di sorgente, non di distanza.
+
+\paragraph{Orientamento: dove si vede il microfono.} Ruotando la capsula da orizzontale a
+verticale il centroide e i suoi vicini quasi non cambiano (centroide, spread e rolloff entro
+il 4\%), coerente con il fatto che l'onda è del luogo e non del trasduttore. In effetti sul
+contrabbasso nessun descrittore cambia oltre l'8\% ruotando la capsula: lo strumento ha poca
+energia in alto, dove la direttività dell'OM1 agisce. La direttività si fa sentire altrove,
+sul rumore a banda larga: lì il centroide orizzontale parte molto più alto del verticale
+(§\ref{sec:rumore}), perché la capsula rivolta verso la sorgente raccoglie più acuti.
+
+In conclusione, nessun descrittore vede tutto: il centroide legge distanza e gesto ma è cieco
+all'orientamento; flux e obsir-std rispondono soprattutto al gesto e restano fuori dall'onda;
+la kurtosis è indifferente all'onda ma esplode sul Do, dove fa da spia della campana. È questa
+divisione del lavoro a fare dei sedici un insieme. Per l'uso in tempo reale conviene scegliere
+il descrittore per il compito: il centroide per distinguere i gesti restando stabile rispetto
+a dove si mette il microfono, l'onda per leggere il luogo, la kurtosis per cogliere il Do e
+la campana.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.9\linewidth]{onda_correlazioni.png}
+  \caption{Correlazione del profilo per canale di ciascun descrittore con quello del centroide,
+  sul contrabbasso: misura quanto ogni descrittore porta l'onda nodo/ventre. In blu chi la
+  segue in fase, in rosso in opposizione, in grigio gli indifferenti (linee tratteggiate a
+  $\pm 0{,}8$).}
+  \label{fig:correlazioni}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\linewidth]{kurtosis_do.png}
+  \caption{Kurtosis spettrale del Do grave per canale, nelle quattro combinazioni di campana
+  e orientamento: il PETALONIO orizzontale esplode al ventre (microfoni a 5 e 6 m), gli altri
+  restano piatti.}
+  \label{fig:kurtosis-do}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{medie_forma.png}
+  \caption{Famiglia forma: medie per canale dei descrittori, per campione.}
+  \label{fig:forma}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{medie_distribuzione.png}
+  \caption{Famiglia distribuzione: medie per canale dei descrittori, per campione.}
+  \label{fig:distribuzione}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{medie_tonalita.png}
+  \caption{Famiglia tonalita': medie per canale dei descrittori, per campione.}
+  \label{fig:tonalita}
+\end{figure}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{medie_dinamica.png}
+  \caption{Famiglia dinamica: medie per canale dei descrittori, per campione.}
+  \label{fig:dinamica}
+\end{figure}
+
+\section{Discussione}
+Il filo dell'esperimento è una discrepanza oggettiva: lo stesso evento sonoro, ripreso da
+punti diversi dello spazio acustico, restituisce descrittori diversi, e la differenza
+supera nettamente la soglia di leggibilità fissata in calibrazione. Sul rumore il centroide
+cala con la distanza (l'aria assorbe gli acuti); sul contrabbasso disegna un'onda di centinaia
+di Hz da un microfono all'altro. In nessuno dei due casi è un effetto di livello, perché il
+centroide è invariante di scala: è la forma dello spettro che arriva diversa a ogni microfono.
+
+La doppia ripresa, orizzontale e verticale, è la chiave per leggere questa differenza. Se
+l'onda fosse un artefatto del microfono (la direttività dell'OM1 ai medio-acuti) cambierebbe
+ruotando le capsule; invece resta quasi identica nei due orientamenti. Questo mi porta a
+considerare sorgente, ambiente e catena come un sistema unico: il valore che leggo non è una
+proprietà della sola sorgente, ma il risultato di come quella sorgente si propaga in quel
+luogo e viene raccolta in quel punto. Il fatto che l'onda compaia sul contrabbasso e non sul
+soprano dice che anche la sorgente entra nel conto: non tutto si spiega con il luogo.
+
+L'onda del centroide sul contrabbasso ha un'origine che ho cominciato a leggere già in sala.
+Lungo i microfoni la fondamentale del clarinetto contrabbasso non arriva con la stessa forza:
+è debole dalle parti del microfono a 3 m e forte attorno ai microfoni a 5 e 6 m, il segno di
+un'onda stazionaria nello spazio acustico. Dove la fondamentale ha un nodo è debole, e il
+centroide, che pesa le frequenze per la loro ampiezza, si sposta verso gli acuti; dove ha un
+ventre è forte e tira il centroide verso il basso. È esattamente ciò che misuro: la cresta
+del centroide al microfono a 3 m e l'avvallamento a quello a 6 m, identici in orizzontale e
+in verticale, quindi non è il microfono.
+
+Resta però un dubbio che non chiudo con questi dati. Non so ancora se quel nodo sia un modo
+proprio della stanza, fisso nello spazio a prescindere dalla sorgente, oppure una figura
+d'interferenza legata alla posizione del clarinetto (il suono diretto più una riflessione
+forte), che si sposterebbe insieme alla sorgente. La prova pulita è una sola: spostare la
+sorgente e rifare la misura. Se il nodo torna nello stesso punto è un modo della stanza; se
+si sposta con lo strumento è legato alla geometria fra sorgente e microfoni. È il controllo
+che qui manca, e il prossimo passo naturale dell'esperimento. Il soprano, intanto, non
+disegna la stessa onda: la sua fondamentale più acuta dispone nodi e ventri a un passo più
+fitto e in posizioni diverse, che sul cluster non si sommano in una figura altrettanto netta.
+
+\section{Conclusioni}
+Ho imparato che i descrittori non sono indifferenti al punto di ripresa. La calibrazione a
+mano è ottima (sotto 0,6 dB di scarto fra i microfoni), quindi le differenze che ho letto
+sono reali. Il livello cala con la distanza ma molto meno del campo libero, perché il LEAP è
+una sala riverberante. A banda piena il centroide del rumore cala nettamente con la distanza,
+l'assorbimento dell'aria sugli acuti che il vecchio tetto a 10 kHz nascondeva, e con lui si
+muovono gli altri descrittori del rumore (il segnale lontano è più scuro, più tonale e più
+stazionario). Sul contrabbasso,
+però, il centroide e con lui i descrittori di forma (e parte della dinamica) disegnano
+un'onda netta lungo i microfoni, uguale nelle due direzioni di ripresa: una deformazione
+dello spettro che dipende dalla propagazione e dal luogo, non dalla direttività del microfono.
+La tonalità e parte della distribuzione restano più ferme.
+
+Per l'uso in tempo reale, nel sistema di \emph{interfantasia}, la conseguenza è concreta. Se
+i descrittori che guidano il comportamento dipendono anche dal punto in cui si raccoglie il
+segnale, allora la posizione del microfono fa parte della calibrazione tanto quanto il
+guadagno: spostarlo significa spostare il vettore. I descrittori di forma, centroide in testa,
+sono i più sensibili al luogo e alla catena, e vanno trattati con questa consapevolezza;
+quelli più fermi (tonalità) offrono un appoggio più stabile. La firma del luogo, insomma,
+entra nella misura: conviene conoscerla prima di affidarle il controllo.
+
+\appendix
+\section{Note matematiche}
+\subsection{Il centroide come invariante di scala}
+Il centroide spettrale è il baricentro dello spettro di ampiezza:
+\begin{equation}
+  C = \frac{\sum_k f_k\, |X_k|}{\sum_k |X_k|}.
+\end{equation}
+Moltiplicare lo spettro per una costante $\alpha>0$ (un guadagno) lascia $C$ invariato:
+\begin{equation}
+  \frac{\sum_k f_k\, \alpha|X_k|}{\sum_k \alpha|X_k|}
+  = \frac{\alpha \sum_k f_k\, |X_k|}{\alpha \sum_k |X_k|} = C.
+\end{equation}
+Quindi una variazione del centroide tra due microfoni non può essere un effetto di
+livello: segnala una deformazione della \emph{forma} dello spettro.
+
+\subsection{Legge dell'inverso della distanza}
+In campo libero la pressione efficace di una sorgente puntiforme decresce come $1/r$.
+In decibel, al raddoppio della distanza:
+\begin{equation}
+  \Delta L = 20\log_{10}\!\frac{1/(2r)}{1/r} = 20\log_{10}\tfrac{1}{2} \approx -6{,}02\ \text{dB}.
+\end{equation}
+La sala reale del LEAP non è anecoica, e infatti non segue questa retta. La misura, sia per
+canale sia al fonometro, cade su una legge più dolce, di $-3$ dB a ogni raddoppio:
+\begin{equation}
+  \Delta L = 20\log_{10}\frac{1}{\sqrt{2}} \approx -3{,}01\ \text{dB},
+\end{equation}
+cioè un'ampiezza proporzionale a $1/\sqrt{r}$. È il comportamento di un campo non più
+puramente diretto: il contributo riverberante della stanza, che decade poco con la distanza,
+si somma al diretto e ne ammorbidisce la caduta.
+
+\subsection{Assorbimento dell'aria sugli acuti}
+L'assorbimento atmosferico cresce con la frequenza e con il cammino percorso: a parità di
+sorgente, i microfoni più lontani ricevono uno spettro relativamente più povero di acuti.
+Poiché il centroide pesa le frequenze per la loro ampiezza, una perdita selettiva degli
+acuti lo sposta verso il basso al crescere della distanza (effetto qualitativo, non un
+adattamento quantitativo).
+
+\end{document}

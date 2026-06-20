@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+05_tanh_drive20.wav,5.0,117,117,2.487,0.503,85.3,256.0,4,0.007166,0.008008,1.9

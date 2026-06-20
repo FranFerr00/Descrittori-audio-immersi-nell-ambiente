@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+24_bin_esatto_40.wav,5.0,117,117,2.414,0.488,213.3,896.0,25,0.00399,0.006419,6.5

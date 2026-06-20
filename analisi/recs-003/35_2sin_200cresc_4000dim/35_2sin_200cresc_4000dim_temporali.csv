@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+35_2sin_200cresc_4000dim.wav,8.0,187,187,4.647,0.586,42.7,4309.3,37,0.003259,0.005479,7.8

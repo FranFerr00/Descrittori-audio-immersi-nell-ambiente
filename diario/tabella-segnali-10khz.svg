@@ -1,0 +1,494 @@
+<h1 id="tabella-descrittori-per-segnale-limite-10-khz">Tabella
+descrittori per segnale (limite 10 kHz)</h1>
+<p>Configurazione: FFT 8192, Hann, overlap 50%, SR 96000, analisi
+limitata a 0-10000 Hz</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>Segnale</th>
+<th>Centroid (Hz)</th>
+<th>Spread (Hz)</th>
+<th>Flatness</th>
+<th>Flux</th>
+<th>Irregularity</th>
+<th>TPR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sinusoide 440 Hz</td>
+<td>439.7</td>
+<td>11.9</td>
+<td>0.2788</td>
+<td>0.0063</td>
+<td>28.6</td>
+<td>0.5066</td>
+</tr>
+<tr>
+<td>Noise bianco</td>
+<td>4956.0</td>
+<td>2866.2</td>
+<td>0.9285</td>
+<td>1.3013</td>
+<td>2657.0</td>
+<td>0.4034</td>
+</tr>
+<tr>
+<td>Impulsi 100 Hz</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0000</td>
+<td>0.0000</td>
+<td>0.0</td>
+<td>0.5881</td>
+</tr>
+<tr>
+<td>Tanh drive 1</td>
+<td>475.4</td>
+<td>174.3</td>
+<td>0.2770</td>
+<td>0.0075</td>
+<td>50.8</td>
+<td>0.5075</td>
+</tr>
+<tr>
+<td>Tanh drive 5</td>
+<td>915.0</td>
+<td>868.3</td>
+<td>0.2942</td>
+<td>0.0122</td>
+<td>167.9</td>
+<td>0.5108</td>
+</tr>
+<tr>
+<td>Tanh drive 20</td>
+<td>1857.1</td>
+<td>2090.5</td>
+<td>0.3931</td>
+<td>0.0426</td>
+<td>273.7</td>
+<td>0.5152</td>
+</tr>
+<tr>
+<td>Noise BP Q=500</td>
+<td>2476.4</td>
+<td>2057.4</td>
+<td>0.7128</td>
+<td>1.6960</td>
+<td>2197.0</td>
+<td>0.4189</td>
+</tr>
+<tr>
+<td>Noise BP Q=200</td>
+<td>1803.3</td>
+<td>1413.5</td>
+<td>0.6511</td>
+<td>1.2629</td>
+<td>1641.7</td>
+<td>0.4288</td>
+</tr>
+<tr>
+<td>Noise BP Q=50</td>
+<td>1279.8</td>
+<td>672.5</td>
+<td>0.5703</td>
+<td>0.7779</td>
+<td>899.3</td>
+<td>0.4491</td>
+</tr>
+<tr>
+<td>FM indice 0.5</td>
+<td>543.6</td>
+<td>320.6</td>
+<td>0.3608</td>
+<td>0.0124</td>
+<td>123.6</td>
+<td>0.5188</td>
+</tr>
+<tr>
+<td>FM indice 3</td>
+<td>1421.9</td>
+<td>863.5</td>
+<td>0.4416</td>
+<td>0.0192</td>
+<td>320.9</td>
+<td>0.6059</td>
+</tr>
+<tr>
+<td>FM indice 10</td>
+<td>4281.9</td>
+<td>2236.1</td>
+<td>0.5529</td>
+<td>0.0197</td>
+<td>701.0</td>
+<td>0.6076</td>
+</tr>
+<tr>
+<td>Sin 100%</td>
+<td>436.1</td>
+<td>11.4</td>
+<td>0.2752</td>
+<td>0.0157</td>
+<td>28.4</td>
+<td>0.5042</td>
+</tr>
+<tr>
+<td>Sin 75% + Noise 25%</td>
+<td>683.7</td>
+<td>1175.6</td>
+<td>0.2014</td>
+<td>0.0468</td>
+<td>232.0</td>
+<td>0.5022</td>
+</tr>
+<tr>
+<td>Sin 50% + Noise 50%</td>
+<td>3654.3</td>
+<td>3171.8</td>
+<td>0.7398</td>
+<td>0.7005</td>
+<td>2656.6</td>
+<td>0.4662</td>
+</tr>
+<tr>
+<td>Sin 25% + Noise 75%</td>
+<td>4594.3</td>
+<td>3002.0</td>
+<td>0.8910</td>
+<td>1.0789</td>
+<td>3098.1</td>
+<td>0.3819</td>
+</tr>
+<tr>
+<td>Noise 100%</td>
+<td>4993.5</td>
+<td>2882.3</td>
+<td>0.9368</td>
+<td>1.3074</td>
+<td>2718.5</td>
+<td>0.4071</td>
+</tr>
+<tr>
+<td>Sin crescendo</td>
+<td>439.8</td>
+<td>11.0</td>
+<td>0.4837</td>
+<td>0.0133</td>
+<td>26.7</td>
+<td>0.5047</td>
+</tr>
+<tr>
+<td>Sin diminuendo</td>
+<td>436.3</td>
+<td>9.6</td>
+<td>0.4807</td>
+<td>0.0069</td>
+<td>26.5</td>
+<td>0.5075</td>
+</tr>
+<tr>
+<td>Sin cresc-dim</td>
+<td>436.3</td>
+<td>9.6</td>
+<td>0.4760</td>
+<td>0.0071</td>
+<td>26.6</td>
+<td>0.5059</td>
+</tr>
+<tr>
+<td>Noise crescendo</td>
+<td>4020.2</td>
+<td>2258.0</td>
+<td>0.7805</td>
+<td>0.6156</td>
+<td>1884.3</td>
+<td>0.4030</td>
+</tr>
+<tr>
+<td>Noise diminuendo</td>
+<td>4045.6</td>
+<td>2228.5</td>
+<td>0.7790</td>
+<td>0.6146</td>
+<td>1862.5</td>
+<td>0.4034</td>
+</tr>
+<tr>
+<td>Noise cresc-dim</td>
+<td>3973.4</td>
+<td>2278.8</td>
+<td>0.8040</td>
+<td>0.6132</td>
+<td>1886.6</td>
+<td>0.4032</td>
+</tr>
+<tr>
+<td>Bin esatto (40)</td>
+<td>465.4</td>
+<td>9.9</td>
+<td>0.9330</td>
+<td>0.0154</td>
+<td>28.8</td>
+<td>0.6581</td>
+</tr>
+<tr>
+<td>Fuori bin (40.5)</td>
+<td>474.2</td>
+<td>12.0</td>
+<td>0.2805</td>
+<td>0.0064</td>
+<td>28.6</td>
+<td>0.4776</td>
+</tr>
+<tr>
+<td>Bin esatto (80)</td>
+<td>936.9</td>
+<td>10.5</td>
+<td>0.9408</td>
+<td>0.0107</td>
+<td>28.9</td>
+<td>0.6597</td>
+</tr>
+<tr>
+<td>Fuori bin (80.5)</td>
+<td>943.7</td>
+<td>12.0</td>
+<td>0.2796</td>
+<td>0.0090</td>
+<td>28.7</td>
+<td>0.4784</td>
+</tr>
+<tr>
+<td>Gliss lento 200-2000</td>
+<td>1107.6</td>
+<td>11.5</td>
+<td>0.3311</td>
+<td>0.2546</td>
+<td>28.9</td>
+<td>0.5860</td>
+</tr>
+<tr>
+<td>Gliss veloce 200-2000</td>
+<td>1130.8</td>
+<td>17.9</td>
+<td>0.3992</td>
+<td>0.6476</td>
+<td>28.6</td>
+<td>0.4686</td>
+</tr>
+<tr>
+<td>Gliss lento 2000-200</td>
+<td>1093.0</td>
+<td>11.4</td>
+<td>0.3337</td>
+<td>0.2572</td>
+<td>28.8</td>
+<td>0.5846</td>
+</tr>
+<tr>
+<td>Gliss micro 440-460</td>
+<td>448.1</td>
+<td>10.0</td>
+<td>0.3513</td>
+<td>0.0103</td>
+<td>28.8</td>
+<td>0.6075</td>
+</tr>
+<tr>
+<td>2 sin: 200 + 4000 Hz</td>
+<td>2130.6</td>
+<td>1899.8</td>
+<td>0.4241</td>
+<td>0.0061</td>
+<td>55.0</td>
+<td>0.6162</td>
+</tr>
+<tr>
+<td>2 sin: 400 + 1000 Hz</td>
+<td>702.3</td>
+<td>300.6</td>
+<td>0.4073</td>
+<td>0.0082</td>
+<td>54.9</td>
+<td>0.6084</td>
+</tr>
+<tr>
+<td>2 sin: 100 + 8000 Hz</td>
+<td>4045.1</td>
+<td>3950.0</td>
+<td>0.4215</td>
+<td>0.0072</td>
+<td>54.7</td>
+<td>0.5371</td>
+</tr>
+<tr>
+<td>2 sin: 200 cresc + 4000 dim</td>
+<td>2101.1</td>
+<td>1487.6</td>
+<td>0.4067</td>
+<td>0.0078</td>
+<td>53.7</td>
+<td>0.6182</td>
+</tr>
+<tr>
+<td>2 sin: 200 dim + 4000 cresc</td>
+<td>2137.7</td>
+<td>1488.1</td>
+<td>0.4061</td>
+<td>0.0080</td>
+<td>53.7</td>
+<td>0.6176</td>
+</tr>
+<tr>
+<td>2 sin: convergono 1000</td>
+<td>1543.1</td>
+<td>969.9</td>
+<td>0.4593</td>
+<td>0.1842</td>
+<td>54.5</td>
+<td>0.5912</td>
+</tr>
+<tr>
+<td>2 sin: divergono da 1000</td>
+<td>1548.9</td>
+<td>980.1</td>
+<td>0.4606</td>
+<td>0.1843</td>
+<td>54.6</td>
+<td>0.5909</td>
+</tr>
+<tr>
+<td>2 sin: convergono unisono</td>
+<td>400.0</td>
+<td>51.7</td>
+<td>0.4631</td>
+<td>0.0194</td>
+<td>47.0</td>
+<td>0.5980</td>
+</tr>
+<tr>
+<td>Tanh drive cresc 1-20</td>
+<td>1346.8</td>
+<td>1447.6</td>
+<td>0.3422</td>
+<td>0.0111</td>
+<td>225.2</td>
+<td>0.5153</td>
+</tr>
+<tr>
+<td>Tanh drive decresc 20-1</td>
+<td>1335.7</td>
+<td>1430.8</td>
+<td>0.3427</td>
+<td>0.0069</td>
+<td>223.0</td>
+<td>0.5149</td>
+</tr>
+<tr>
+<td>FM indice cresc 0.5-10</td>
+<td>2340.0</td>
+<td>1302.0</td>
+<td>0.4971</td>
+<td>0.0578</td>
+<td>440.8</td>
+<td>0.5935</td>
+</tr>
+<tr>
+<td>FM indice decresc 10-0.5</td>
+<td>2341.2</td>
+<td>1303.4</td>
+<td>0.4990</td>
+<td>0.0436</td>
+<td>442.1</td>
+<td>0.5964</td>
+</tr>
+</tbody>
+</table>
+<h2 id="confronto-con-analisi-a-banda-piena-0-48000-hz">Confronto con
+analisi a banda piena (0-48000 Hz)</h2>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Segnale</th>
+<th>Centroid piena</th>
+<th>Centroid 10kHz</th>
+<th>Flatness piena</th>
+<th>Flatness 10kHz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Noise bianco</td>
+<td>23947</td>
+<td>4956</td>
+<td>0.94</td>
+<td>0.93</td>
+</tr>
+<tr>
+<td>Sin 75% + Noise 25%</td>
+<td>5623</td>
+<td>684</td>
+<td>0.31</td>
+<td>0.20</td>
+</tr>
+<tr>
+<td>Sin 50% + Noise 50%</td>
+<td>22201</td>
+<td>3654</td>
+<td>0.91</td>
+<td>0.74</td>
+</tr>
+<tr>
+<td>Sin 25% + Noise 75%</td>
+<td>23552</td>
+<td>4594</td>
+<td>0.94</td>
+<td>0.89</td>
+</tr>
+<tr>
+<td>Tanh drive 20</td>
+<td>2274</td>
+<td>1857</td>
+<td>0.33</td>
+<td>0.39</td>
+</tr>
+<tr>
+<td>Noise crescendo</td>
+<td>22775</td>
+<td>4020</td>
+<td>0.91</td>
+<td>0.78</td>
+</tr>
+</tbody>
+</table>
+<h2 id="osservazioni">Osservazioni</h2>
+<ul>
+<li>Il centroide del noise scende da ~24000 a ~5000 Hz, piu’
+confrontabile con i segnali tonali</li>
+<li>La transizione nel mix sin/noise diventa piu’ graduale: 0.20 -&gt;
+0.74 -&gt; 0.89 -&gt; 0.94 (prima: 0.31 -&gt; 0.91 -&gt; 0.94)</li>
+<li>Flux e irregularity del noise si riducono (~80%) per il minor numero
+di bin considerate</li>
+<li>I segnali tonali (sinusoidi, FM, tanh, glissandi) restano
+praticamente invariati: il loro contenuto era gia’ sotto 10 kHz</li>
+<li>La tanh drive 20 mostra flatness leggermente piu’ alta (0.39 vs
+0.33): le armoniche sopra 10 kHz non diluiscono piu’ il calcolo</li>
+<li>Il limite rende i descrittori piu’ sensibili alla zona musicalmente
+rilevante</li>
+</ul>

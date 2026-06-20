@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+09_impulsi_100.wav,5.0,117,117,2.474,0.5,0.0,4949.3,30,0.025807,0.027951,1.0

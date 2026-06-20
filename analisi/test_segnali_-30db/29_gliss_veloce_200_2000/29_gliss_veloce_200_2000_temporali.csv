@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+29_gliss_veloce_200_2000.wav,3.0,70,70,1.472,0.5,0.0,2432.0,0,0.017889,0.017949,0.1

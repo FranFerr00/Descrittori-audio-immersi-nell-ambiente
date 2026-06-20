@@ -1,0 +1,883 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{graphicx}
+
+\geometry{margin=2.5cm}
+
+\title{Dai descrittori al filtro bicomb\\[0.5em]
+\large Strategia di mappatura per \emph{interfantasia}}
+\author{Francesco Ferrante}
+\date{Maggio 2026}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Inquadramento del problema}
+% ============================================================
+
+Il sistema dispone di sedici descrittori spettrali (centroid, spread,
+rolloff, slope, flatness, crest, skewness, kurtosis, tonality, tpr, flux,
+irregularity, zcr, entropy, obsir\_std, zscore) calcolati frame per frame
+sul segnale del musicista. Il filtro bicomb dispone di cinque ingressi:
+
+\begin{itemize}[nosep]
+  \item tre parametri continui a rampa, ciascuno nell'intervallo
+        $[-1, +1]$, che possono assumere qualsiasi valore intermedio;
+  \item due contatori a evento, che si incrementano di $+1$ al passaggio
+        di una condizione e governano rispettivamente la lunghezza del
+        ramo FIR e del ramo IIR.
+\end{itemize}
+
+La domanda di ricerca è: come collegare i sedici descrittori a questi
+cinque ingressi in modo che il sistema sia musicalmente leggibile, sia
+per chi suona sia per chi ascolta?
+
+% ============================================================
+\section{Strategie classiche e loro limiti}
+% ============================================================
+
+La letteratura su feature extraction in live electronics (Bullock 2008,
+Jehan 2005, Park 2004) offre quattro famiglie di strategie:
+
+\begin{enumerate}
+  \item Vettore di feature in input a un classificatore (k-NN, ANN)
+        per riconoscere classi sonore.
+  \item Combinazione lineare pesata di poche feature scelte, scalata e
+        filtrata, per ottenere un controllo continuo.
+  \item Soglie sui valori o sulle derivate temporali delle feature per
+        generare eventi discreti.
+  \item Uso di feature singole come segnali di controllo simbolici (f0,
+        onset, envelope).
+\end{enumerate}
+
+Tutte queste strategie chiedono di scegliere a priori quali descrittori
+combinare. La scelta è di solito ad hoc rispetto al brano e al pezzo
+musicale. Per il nostro caso, in cui lo stesso impianto deve funzionare
+su un corpus eterogeneo, abbiamo cercato un criterio più sistematico.
+
+% ============================================================
+\section{Da un'analisi di correlazione a una scelta}
+% ============================================================
+
+Prima di decidere il mapping abbiamo studiato la matrice di correlazione
+dei sedici descrittori sul corpus, in due regimi.
+
+\paragraph{Correlazione fra-gesti.}
+Aggregando tutti i frame di tutti i gesti, emerge un cluster molto coeso
+(centroid, rolloff, spread, flatness, irregularity, entropy, zcr, crest)
+con $\lvert r\rvert > 0{,}7$ stabilmente fra strumenti diversi.
+Tonality e tpr appaiono anti-correlati a questo cluster. Solo skewness e
+kurtosis formano una coppia indipendente più debole. Slope, flux,
+obsir\_std e zscore mostrano comportamenti variabili fra cataloghi.
+
+\paragraph{Correlazione intra-gesto.}
+Calcolando invece la correlazione \emph{dentro} il singolo gesto
+(cioè quanto i descrittori si muovono insieme istante per istante),
+la struttura collassa: solo la coppia flatness/tonality resta correlata
+(media $-0{,}99$, deviazione $0{,}01$ su 257 gesti). Tutte le altre coppie
+mostrano grande variabilità: lo stesso paio di descrittori può essere
+fortemente correlato in un gesto e scorrelato in un altro.
+
+\paragraph{Conseguenza.}
+La struttura di correlazione fra descrittori \emph{non è una costante
+strutturale del sistema}, ma varia con il segnale. Questo è un dato
+musicalmente prezioso: significa che la matrice di correlazione, calcolata
+in tempo reale, è essa stessa una sorgente di informazione sul carattere
+del suono, indipendente dai valori dei singoli descrittori.
+
+% ============================================================
+\section{La strategia adottata: la matrice come sorgente}
+% ============================================================
+
+La strategia proposta è la seguente:
+
+\begin{enumerate}
+  \item A ogni istante $t$ si calcola la matrice di correlazione di
+        Pearson $M(t)$ fra i sedici descrittori, su una finestra mobile
+        di $N$ frame.
+  \item Dalla matrice si estraggono cinque scalari (tre proprietà
+        strutturali, due indicatori di evoluzione) che diventano
+        direttamente i cinque ingressi del bicomb.
+\end{enumerate}
+
+Il vantaggio concettuale è doppio. Primo, partecipa l'intera tabella:
+nessuna casella viene scelta a priori, e nessun descrittore viene
+preferito. Secondo, i controlli misurano la \emph{grammatica} con cui il
+timbro evolve, non i valori istantanei dello spettro. Il filtro bicomb
+risponde al modo in cui il timbro si organizza, non al timbro in sé.
+
+% ============================================================
+\section{Calcolo della matrice rolling}
+% ============================================================
+
+A ogni frame $t \ge N - 1$, sia $\mathbf{x}_i(t)$ la serie temporale del
+descrittore $i$ ristretta alla finestra $[t - N + 1,\, t]$. La cella
+$(i, j)$ della matrice $M(t)$ è il coefficiente di correlazione di
+Pearson fra $\mathbf{x}_i(t)$ e $\mathbf{x}_j(t)$:
+\[
+M_{ij}(t) = \frac{\sum_{k} (x_i^{(k)} - \bar x_i)(x_j^{(k)} - \bar x_j)}
+                 {\sqrt{\sum_{k} (x_i^{(k)} - \bar x_i)^2}\,
+                  \sqrt{\sum_{k} (x_j^{(k)} - \bar x_j)^2}}.
+\]
+
+La matrice è simmetrica, ha diagonale costante $+1$ e contiene
+$K(K-1)/2$ valori distinti nel triangolo superiore (per $K = 15$
+descrittori utilizzabili, sono 105 numeri). Tutti i valori stanno in
+$[-1, +1]$, il che si rivela cruciale: i controlli che ne derivano sono
+già nella scala richiesta dal filtro.
+
+Sui descrittori con varianza nulla nella finestra (caso tipico delle
+sinusoidi pure) la correlazione è indefinita; la cella corrispondente
+viene marcata e ignorata nelle aggregazioni successive.
+
+% ============================================================
+\section{I cinque controlli}
+% ============================================================
+
+% --------------------------------------------------------
+\subsection{$C_1$ -- Coerenza media segnata}
+% --------------------------------------------------------
+
+\formula
+\[
+C_1(t) = \frac{2}{K(K-1)} \sum_{i < j} M_{ij}(t).
+\]
+
+\paragraph{Significato.}
+Media di tutte le correlazioni a coppie con il loro segno. Misura il
+livello medio di sincronia fra i descrittori nella finestra corrente.
+
+\paragraph{Interpretazione musicale.}
+\begin{itemize}[nosep]
+  \item $C_1 \to +1$: tutti i descrittori si muovono nello stesso verso.
+        Tipico dei gesti in cui un inviluppo molto marcato trascina con sé
+        ogni aspetto del timbro (colpo percussivo, crescendo armonico).
+  \item $C_1 \to 0$: i descrittori si muovono indipendentemente.
+        Tipico dei suoni stazionari (rumore, sinusoide tenuta) o dei
+        gesti articolati dove diverse dimensioni dello spettro
+        cambiano in modo non coordinato.
+  \item $C_1 \to -1$: anti-correlazione dominante. Caso raro, sintomo
+        di trasformazioni molto strutturate (es. crescendo che scurisce).
+\end{itemize}
+
+\paragraph{Range osservato.}
+Sul corpus, $C_1$ si muove in $[-0{,}05,\, +0{,}30]$. I valori più alti
+sono prodotti dai gesti del clarinetto contrabbasso ($C_{1,\text{media}}
+\approx +0{,}12$) e dalle sinusoidi in crescendo. Sui suoni stazionari
+(rumore bianco, sinusoide a 440 Hz) e sui timpani tenuti, $C_1$ resta
+vicino allo zero.
+
+% --------------------------------------------------------
+\subsection{$C_2$ -- Concentrazione assiale}
+% --------------------------------------------------------
+
+\formula
+Siano $\lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_K$ gli autovalori
+in modulo della matrice $M(t)$, ordinati in modo decrescente. Allora:
+\[
+C_2(t) = 2\,\frac{\lvert \lambda_1 \rvert}{\sum_{i=1}^{K} \lvert \lambda_i \rvert} - 1.
+\]
+
+\paragraph{Significato.}
+Frazione dell'informazione totale della matrice catturata dal primo asse
+principale, riscalata da $[0, 1]$ a $[-1, +1]$. È una misura di
+\emph{dimensionalità effettiva} del sistema descrittori.
+
+\paragraph{Interpretazione musicale.}
+\begin{itemize}[nosep]
+  \item $C_2 \to +1$: la matrice è quasi rank-1. Tutto il movimento dei
+        sedici descrittori è proiettabile su un solo asse. Il suono è
+        \emph{monolitico}: tutte le sue dimensioni variano in modo
+        coordinato.
+  \item $C_2 \to -1$: gli autovalori sono distribuiti uniformemente.
+        Il sistema occupa molte dimensioni indipendenti, e il suono ha
+        una struttura interna ricca, non riducibile a un singolo
+        ``percorso''.
+\end{itemize}
+
+\paragraph{Range osservato.}
+$C_2$ si muove in $[-0{,}45,\, +0{,}40]$ a seconda dei gesti. I suoni
+sintetici stazionari (sinusoidi, rumori filtrati) hanno valori medi
+positivi (intorno a $+0{,}17$, ${+0{,}20}$). I gesti con distorsione
+non-lineare evolutiva (\texttt{tanh\_drive}) producono escursioni ampie
+da $-0{,}40$ a $+0{,}26$, segno che la dimensionalità del sistema cambia
+durante il gesto.
+
+% --------------------------------------------------------
+\subsection{$C_3$ -- Asimmetria di segno}
+% --------------------------------------------------------
+
+\formula
+Siano $n_+$ il numero di celle del triangolo superiore con $M_{ij} > 0$
+e $n_-$ il numero di celle con $M_{ij} < 0$. Allora:
+\[
+C_3(t) = \frac{n_+ - n_-}{n_+ + n_-}.
+\]
+
+\paragraph{Significato.}
+Bilanciamento netto fra coppie concordi e coppie discordi. A differenza
+di $C_1$, non considera la magnitudine: due matrici possono avere stessa
+media $C_1$ ma topologia di segni diversa.
+
+\paragraph{Interpretazione musicale.}
+\begin{itemize}[nosep]
+  \item $C_3 \to +1$: dominano le concordanze. Suoni con organizzazione
+        coerente, anche se debole.
+  \item $C_3 \to -1$: dominano le opposizioni. Caso raro nel corpus.
+  \item $C_3 \to 0$: equilibrio fra concordanze e opposizioni.
+\end{itemize}
+
+\paragraph{Range osservato.}
+$C_3$ si muove in $[-0{,}10,\, +0{,}35]$. Anche qui il clarinetto si
+distingue (media $+0{,}17$). Il valore di $C_3$ tende a seguire $C_1$
+ma non in modo deterministico: nei gesti articolati le due grandezze
+si discostano.
+
+% --------------------------------------------------------
+\subsection{$E_1$ -- Velocità di evoluzione strutturale}
+% --------------------------------------------------------
+
+\formula
+Sia $D$ il ritardo in frame. Si definisce la distanza di Frobenius
+normalizzata fra la matrice attuale e quella di $D$ frame fa:
+\[
+E_1(t) = \frac{1}{\sqrt{K(K-1)}}\,
+        \Bigl\| M(t) - M(t - D) \Bigr\|_F
+      = \frac{1}{\sqrt{K(K-1)}}\,
+        \sqrt{\sum_{i,j} \bigl( M_{ij}(t) - M_{ij}(t-D) \bigr)^2}.
+\]
+
+La normalizzazione per $\sqrt{K(K-1)}$ rende $E_1$ indipendente dalla
+taglia della matrice: una soglia fissata su $E_1$ ha lo stesso
+significato qualunque sia il numero di descrittori.
+
+\paragraph{Significato.}
+Tasso a cui la struttura delle relazioni fra descrittori si trasforma.
+
+\paragraph{Trigger.}
+$E_1$ alimenta uno dei due contatori a evento del bicomb. La condizione
+di trigger è:
+\[
+E_1(t-1) \le \theta_{E_1} < E_1(t),
+\]
+con un tempo di refrattarietà di $\sim 200$ ms dopo ogni trigger per
+evitare conteggi multipli sullo stesso evento.
+
+\paragraph{Range e soglia.}
+Su finestra $N = 32$, $D = 16$, $E_1$ si muove in $[0, 0{,}8]$ circa.
+La soglia di default $\theta_{E_1} = 0{,}15$ produce mediamente 2--3
+trigger per gesto. Sul timpano, dove gli inviluppi sono lenti ma
+articolati, salgono a $\sim 2{,}6$ trigger; sui sintetici stazionari
+restano vicini a $3{,}5$ per via di micro-instabilità delle correlazioni.
+
+% --------------------------------------------------------
+\subsection{$E_2$ -- Rotazione dell'asse dominante}
+% --------------------------------------------------------
+
+\formula
+Sia $\mathbf{v}_1(t)$ il primo autovettore (associato a $\lambda_1$)
+della matrice $M(t)$. Si definisce:
+\[
+E_2(t) = \frac{\mathbf{v}_1(t) \cdot \mathbf{v}_1(t - D)}
+              {\lVert\mathbf{v}_1(t)\rVert\, \lVert\mathbf{v}_1(t-D)\rVert}.
+\]
+
+Il segno dell'autovettore è arbitrario (numericamente); per renderlo
+deterministico si fissa positivo il primo elemento non nullo. La
+quantità di interesse è il valore assoluto del coseno.
+
+\paragraph{Significato.}
+Coseno dell'angolo fra l'asse principale corrente e quello di $D$ frame
+fa. Vale $+1$ quando l'orientamento dell'asse non è cambiato, scende
+verso $0$ quando l'asse è ruotato di $90^\circ$.
+
+\paragraph{Trigger.}
+$E_2$ alimenta l'altro contatore. La condizione è opposta a $E_1$
+(trigger \emph{in discesa}, cioè quando il coseno cala sotto soglia):
+\[
+\lvert E_2(t-1) \rvert \ge \theta_{E_2} > \lvert E_2(t) \rvert.
+\]
+
+\paragraph{Range e soglia.}
+Sui gesti stazionari $E_2$ resta sopra $0{,}95$; sui gesti articolati può
+scendere a $0{,}4$ e oltre. Con $\theta_{E_2} = 0{,}9$, sul corpus si
+ottengono mediamente tre-quattro trigger per gesto; i timpani
+producono il numero massimo ($\sim 6{,}2$ trigger di media), coerente
+con suoni che ruotano lentamente il proprio asse spettrale durante il
+decay.
+
+% ============================================================
+\section{Parametri di taratura}
+% ============================================================
+
+I parametri da fissare sono:
+
+\begin{itemize}[nosep]
+  \item \textbf{$N$ -- finestra rolling per la correlazione.} Troppo
+        corta ($N < 16$) produce correlazioni molto rumorose; troppo
+        lunga ($N > 128$) rende il sistema lento e perde le dinamiche
+        rapide. Default attuale: $N = 32$ frame, pari a circa
+        $0{,}75$ s con \texttt{hop} di $\sim 23$ ms.
+  \item \textbf{$D$ -- ritardo per $E_1$ ed $E_2$.} Tipicamente $D = N/2$.
+        Default: $D = 16$ frame, circa $0{,}37$ s.
+  \item \textbf{$\theta_{E_1}$ -- soglia di trigger sull'evoluzione.}
+        Default $0{,}15$; abbassandola si ottengono trigger più frequenti.
+  \item \textbf{$\theta_{E_2}$ -- soglia di trigger sulla rotazione.}
+        Default $0{,}9$.
+  \item \textbf{Refrattarietà.} Tempo morto fra trigger successivi.
+        Default $200$ ms.
+\end{itemize}
+
+% ============================================================
+\section{Caratterizzazione del corpus}
+% ============================================================
+
+L'analisi batch sui 256 gesti del corpus (sette cataloghi: clarinetto
+contrabbasso, timpano tenuto, sintetici, test\_segnali a $-30$ dB, tre
+serie \texttt{recs}-002/003/004) produce le seguenti caratteristiche
+medie per catalogo:
+
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+catalogo & $C_1$ media & $C_1$ range & $C_2$ media & $E_1$ max & trigger $E_2$\\
+\midrule
+clarinetto       & $+0{,}12$ & $0{,}36$ & $+0{,}05$ & $0{,}73$ & $4{,}0$\\
+timpano          & $+0{,}01$ & $0{,}17$ & $-0{,}05$ & $0{,}63$ & $6{,}2$\\
+sintetici        & $-0{,}02$ & $0{,}11$ & $+0{,}17$ & $0{,}36$ & $3{,}1$\\
+test\_segnali    & $-0{,}03$ & $0{,}11$ & $+0{,}20$ & $0{,}35$ & $3{,}1$\\
+recs-002         & $-0{,}00$ & $0{,}10$ & $-0{,}04$ & $0{,}48$ & $3{,}2$\\
+recs-003         & $+0{,}02$ & $0{,}12$ & $-0{,}04$ & $0{,}48$ & $3{,}2$\\
+recs-004         & $+0{,}03$ & $0{,}11$ & $-0{,}02$ & $0{,}47$ & $3{,}1$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Osservazioni principali.}
+
+\begin{itemize}
+  \item Il clarinetto si distingue su $C_1$ ed escursione di $C_1$,
+        confermando che i suoi gesti hanno inviluppi che trascinano
+        l'intera struttura dei descrittori.
+  \item Il timpano è il catalogo più attivo su $E_2$: i suoi suoni
+        tenuti evolvono lentamente nell'orientamento spettrale, anche
+        senza grandi variazioni di intensità.
+  \item I sintetici hanno $C_2$ medio positivo, segno di matrici più
+        concentrate sull'asse principale (suoni a struttura semplice).
+  \item Le tre serie \texttt{recs} si comportano in modo quasi identico
+        fra loro su tutte le metriche, coerentemente con la loro natura
+        di repliche dello stesso protocollo di test.
+\end{itemize}
+
+% ============================================================
+\section{Questioni aperte}
+% ============================================================
+
+Tre punti restano da decidere sperimentalmente prima dell'implementazione
+in Pure Data.
+
+\paragraph{Indipendenza di $C_3$ rispetto a $C_1$.}
+Sul corpus le due grandezze tendono a co-variare. Andrà verificato se il
+guadagno informativo di $C_3$ giustifica la sua presenza come terzo
+ingresso indipendente, oppure se conviene sostituirlo con un'altra
+grandezza scalare ricavata dalla matrice (per esempio l'entropia della
+distribuzione degli autovalori, o la kurtosis della distribuzione delle
+correlazioni nel triangolo).
+
+\paragraph{Filtraggio a valle.}
+I controlli $C_1$, $C_2$, $C_3$ vanno smussati prima di alimentare il
+filtro: una media mobile leggera (8 frame) o un EMA con $\alpha \approx
+0{,}1$ è sufficiente. Per i trigger $E_1$ e $E_2$ è opportuno applicare
+una \emph{soft dead zone} attorno alla soglia con isteresi.
+
+\paragraph{Pre-condizionamento del segnale in tempo reale.}
+In Pd il segnale del microfono deve essere passato attraverso un gate e
+un compressore prima dell'estrazione dei descrittori, come prescritto
+in Bullock (2008) per Sparkling Box. I valori del gate sono già fissati
+per l'analisi offline ($-65$ dBFS assoluto, $-30$ dB relativo al picco
+globale).
+
+% ============================================================
+\section{Architettura per famiglie e mappatura definitiva}
+% ============================================================
+
+L'esplorazione sulla matrice globale $15 \times 15$ ha mostrato che da essa
+si estraggono al massimo due controlli continui indipendenti ($C_1$ e
+$C_2$): ogni altra grandezza derivata ($C_3$, $\sigma_M$ della
+distribuzione delle correlazioni, kurtosis, polarizzazione, frazione di
+celle deboli) si rivela un doppione strutturale di uno dei due. La
+matrice globale, da sola, non porta abbastanza dimensioni indipendenti
+per coprire i cinque ingressi del bicomb in modo non ridondante.
+
+\subsection{Suddivisione in famiglie}
+
+I sedici descrittori si raggruppano in quattro famiglie, ciascuna
+dedicata a un aspetto del timbro:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+famiglia & $K_F$ & descrittori \\
+\midrule
+collocazione & 4 & centroid, rolloff, spread, slope \\
+grana   & 5 & flatness, tonality, tpr, irregularity, entropy \\
+forma        & 3 & skewness, kurtosis, crest \\
+dinamica     & 3 & flux, zcr, obsir\_std (zscore opzionale) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Per ogni famiglia si calcola una matrice di correlazione rolling
+indipendente $M_F(t)$ di taglia $K_F \times K_F$, con finestra adattata:
+$N_F = \max(16,\, 4 K_F)$, $D_F = N_F/2$. Da ognuna si estraggono i
+quattro scalari $C_1^F$, $C_2^F$, $E_1^F$, $E_2^F$ con le stesse formule
+della matrice globale.
+
+\paragraph{Verifica empirica.}
+Sul corpus dei 256 gesti, i $C_1^F$ delle quattro famiglie risultano
+quasi ortogonali fra loro (correlazione cross-gesto massima $0{,}39$
+fra collocazione e forma, il resto sotto $0{,}22$), contro lo $0{,}92$
+fra $C_1$ e $C_3$ della matrice globale. Su un brano reale
+(\emph{A Pierre senza elettronica}, due strumenti distinti registrati
+sui due canali), i profili medi dei $C_1^F$ separano nettamente
+flauto contrabbasso e clarinetto contrabbasso, e dentro ciascun
+canale i controlli coprono il range pieno $[-1, +1]$. La struttura per
+famiglie è quindi sia indipendente sia espressiva.
+
+\subsection{Mappatura definitiva al bicomb}
+
+Il bicomb riceve cinque ingressi: due controlli continui (frequenza di
+taglio $f_c$ e fattore $Q$), un selettore discreto a quattro forme, e
+due contatori a evento (lunghezza del ramo FIR e del ramo IIR). La
+mappatura definitiva assegna a ciascun ingresso una sorgente specifica
+fra i sedici scalari delle famiglie:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+ingresso bicomb & sorgente & famiglia guida \\
+\midrule
+continuo 1: $f_c$         & $C_1^{\text{collocazione}}$ & collocazione \\
+continuo 2: $Q$           & $C_1^{\text{grana}}$   & grana \\
+selettore a 4 forme       & $\arg\max_F C_1^F$ con isteresi & tutte e quattro \\
+trigger FIR               & $E_1^{\text{dinamica}}$     & dinamica \\
+trigger IIR               & $E_2^{\text{forma}}$        & forma \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Ogni famiglia ha un ruolo nominato: collocazione e grana pilotano
+i due controlli continui (i due assi del filtro), forma e dinamica
+producono gli eventi che allungano le catene FIR e IIR, e tutte e
+quattro partecipano collettivamente al selettore di forma.
+
+\paragraph{Lettura musicale.}
+I due continui misurano \emph{com'è fatto} il suono in quel momento
+(quanto luminoso, quanto rumoroso). I due trigger misurano
+\emph{cosa sta succedendo} al suono (la dinamica produce eventi quando
+la trama temporale si riassetta, la forma produce eventi quando il
+profilo della distribuzione spettrale ruota). Il selettore dice quale
+famiglia sta tirando il timbro adesso, e quindi che geometria deve
+avere il filtro.
+
+\subsection{Semantica dei controlli continui: integratore senza ritorno}
+
+I due controlli continui $C_1^{\text{collocazione}}$ e
+$C_1^{\text{grana}}$ \emph{non} sono valori di posizione assoluti
+da assegnare a $f_c$ e $Q$. Sono \emph{spinte}, cioè velocità di
+spostamento. Il bicomb ha uno stato interno (la $f_c$ e la $Q$ correnti)
+che si aggiorna integrando la spinta:
+\[
+f_c(t) = f_c(t-1) + \alpha_{f}\,C_1^{\text{collocazione}}(t),
+\qquad
+Q(t) = Q(t-1) + \alpha_{Q}\,C_1^{\text{grana}}(t),
+\]
+con $\alpha_f, \alpha_Q$ coefficienti di taratura che fissano la
+``velocità di reazione'' del filtro, e $f_c, Q$ saturati ai loro
+limiti fisici.
+
+\paragraph{Conseguenze.}
+\begin{itemize}[nosep]
+  \item \textbf{Lo zero non è uno stato stabile.} $C_1^F = 0$ significa
+        spinta nulla: il filtro \emph{resta dove è stato lasciato}, non
+        torna a un centro. I passaggi neutri del gesto non disturbano
+        la geometria conquistata.
+  \item \textbf{Memoria del gesto.} La posizione attuale di $f_c$ e $Q$
+        è il risultato di tutta la storia delle spinte ricevute. Il
+        musicista può ``portare'' il filtro in una zona spingendo nella
+        direzione voluta, e poi lasciarlo lì interrompendo la
+        coordinazione.
+  \item \textbf{Dead-zone soft.} Per evitare drift dovuti al rumore di
+        stima di $C_1^F$, vale la pena di applicare una dead-zone
+        morbida di $\pm 0{,}03$--$0{,}05$ attorno allo zero. Non serve
+        per stabilità (il sistema è già stabile a zero), ma per pulizia.
+  \item \textbf{Convenzione di segno.} Va fissata una sola volta: i due
+        valori positivi di $C_1^F$ aprono il filtro in una direzione,
+        quelli negativi nell'altra. La scelta è compositiva e non
+        cambia il calcolo offline.
+\end{itemize}
+
+\paragraph{Immagine intuitiva.}
+Il filtro è un galleggiante con remi: galleggia dove sta, il musicista
+può remare (coordinando collocazione o grana) per spostarlo,
+smettere di remare lo lascia fermo, e ci sono due sponde che non si
+possono attraversare (i limiti di $f_c$ e $Q$).
+
+\subsection{Semantica dei trigger: eventi a soglia con refrattarietà}
+
+Diversamente dai due controlli continui, $E_1^{\text{dinamica}}$ ed
+$E_2^{\text{forma}}$ \emph{non} pilotano un'integrazione di stato. Sono
+sorgenti di \emph{eventi discreti}: a ogni passaggio di soglia
+incrementano di $+1$ il rispettivo contatore del bicomb (lunghezza del
+ramo FIR per il primo, del ramo IIR per il secondo).
+
+\paragraph{Condizioni di trigger.}
+\begin{itemize}[nosep]
+  \item $E_1^{\text{dinamica}}$ scatta \emph{in salita}, quando
+        $E_1^{\text{dinamica}}(t-1) \le \theta_{E_1} < E_1^{\text{dinamica}}(t)$:
+        cioè quando la struttura della famiglia dinamica si è
+        riassettata abbastanza in fretta.
+  \item $E_2^{\text{forma}}$ scatta \emph{in discesa},
+        quando $|E_2^{\text{forma}}(t-1)| \ge \theta_{E_2} > |E_2^{\text{forma}}(t)|$:
+        cioè quando il coseno fra autovettori successivi della famiglia
+        forma cala sotto soglia, segno che l'asse principale della
+        distribuzione spettrale è ruotato.
+\end{itemize}
+
+\paragraph{Refrattarietà.}
+Dopo ogni trigger si applica un tempo morto di $\sim 200$ ms durante il
+quale ulteriori passaggi di soglia vengono ignorati. Serve a evitare
+conteggi multipli sullo stesso evento musicale (oscillazioni della
+grandezza attorno alla soglia).
+
+\paragraph{Effetto sul filtro.}
+Ogni trigger \emph{allunga} la catena corrispondente del bicomb di un
+tap. La lunghezza dei rami è quindi un altro tipo di memoria del
+gesto: cresce nel tempo, contando gli eventi musicalmente rilevanti
+prodotti dal musicista. Va deciso se prevedere un meccanismo di
+azzeramento (a comando, oppure per decadimento lento), per evitare che
+dopo una performance lunga i rami siano cresciuti troppo per essere
+gestibili.
+
+\subsection{Conseguenze sulle scelte precedenti}
+
+Questa architettura per famiglie rende obsolete diverse scelte fatte
+con la sola matrice globale:
+
+\begin{itemize}[nosep]
+  \item I controlli $C_1$, $C_2$ e $C_3$ \emph{globali} descritti nelle
+        sezioni precedenti restano utili come strumenti di analisi e
+        confronto, ma \emph{non sono} la sorgente dei controlli del
+        bicomb. La matrice globale resta come riferimento, non come
+        pipeline operativa.
+  \item I trigger $E_1$ ed $E_2$ \emph{globali} sono sostituiti dalle
+        loro versioni di famiglia ($E_1^{\text{dinamica}}$ e
+        $E_2^{\text{forma}}$). Il calcolo è identico ma su una matrice
+        più piccola, e gli eventi diventano localizzati alla famiglia
+        che li produce.
+  \item Le \emph{questioni aperte} sul terzo controllo continuo
+        (sostituzione di $C_3$) sono chiuse: il terzo ingresso del
+        bicomb non è un controllo continuo, è un selettore a cinque
+        stati pilotato da $\arg\max_F C_1^F$.
+\end{itemize}
+
+% ============================================================
+\section{Appendice: lettura dettagliata delle formule}
+% ============================================================
+
+Questa appendice riprende ogni formula della dispensa e ne descrive il
+significato di ciascun simbolo, una componente alla volta. È pensata per
+poter essere consultata senza dover ricostruire il contesto.
+
+% --------------------------------------------------------
+\subsection{Coefficiente di correlazione di Pearson}
+% --------------------------------------------------------
+
+\[
+r = \frac{\sum_{i=1}^{n} (x_i - \bar x)(y_i - \bar y)}
+         {\sqrt{\sum_{i=1}^{n} (x_i - \bar x)^2}\,
+          \sqrt{\sum_{i=1}^{n} (y_i - \bar y)^2}}
+\]
+
+\paragraph{$n$.} Numero di campioni confrontati. Nel nostro caso è il
+numero di frame della finestra rolling ($n = N$).
+
+\paragraph{$x_i$, $y_i$.} Valori delle due serie temporali al frame $i$.
+Tipicamente $x_i$ è il valore di un descrittore (per esempio il
+centroide) al frame $i$, e $y_i$ il valore di un altro descrittore (per
+esempio lo spread) allo stesso frame.
+
+\paragraph{$\bar x$, $\bar y$.} Medie aritmetiche delle due serie sulla
+finestra di $n$ frame:
+\[
+\bar x = \frac{1}{n}\sum_{i=1}^{n} x_i, \qquad
+\bar y = \frac{1}{n}\sum_{i=1}^{n} y_i.
+\]
+Servono come punto di riferimento: si guarda quanto ogni frame si
+discosta dalla media, non i valori assoluti.
+
+\paragraph{$(x_i - \bar x)$, $(y_i - \bar y)$.} Scarti dalla media,
+detti \emph{deviazioni centrate}. Sono positivi quando il frame è sopra
+la media, negativi quando è sotto. Centrare significa traslare l'origine
+sulla media: dopo questa operazione contano solo le oscillazioni.
+
+\paragraph{$(x_i - \bar x)(y_i - \bar y)$.} Prodotto degli scarti al
+frame $i$. Il segno dice se a quel frame i due descrittori si muovono
+dalla stessa parte (prodotto positivo) o in direzioni opposte (prodotto
+negativo). La grandezza pesa l'ampiezza congiunta della deviazione.
+
+\paragraph{$\sum_{i=1}^{n} (x_i - \bar x)(y_i - \bar y)$.} Somma dei
+prodotti su tutti i frame. È proporzionale alla \emph{covarianza}.
+Misura, complessivamente, quanto le due serie si muovono in modo
+concorde sulla finestra. Dipende dalle unità di misura: per renderla
+adimensionale serve il denominatore.
+
+\paragraph{$(x_i - \bar x)^2$.} Scarto al quadrato. Toglie il segno e
+tiene solo la grandezza della deviazione.
+
+\paragraph{$\sum_{i=1}^{n} (x_i - \bar x)^2$.} Somma dei quadrati degli
+scarti. Misura quanto la serie $x$ varia complessivamente sulla finestra.
+Se $x$ è quasi costante è piccola, se oscilla molto è grande. È
+proporzionale alla varianza di $x$.
+
+\paragraph{$\sqrt{\sum_{i=1}^{n} (x_i - \bar x)^2}$.} Radice della somma
+dei quadrati. È proporzionale alla deviazione standard di $x$.
+Rappresenta l'\emph{ampiezza} della serie centrata.
+
+\paragraph{$\sqrt{\sum(x_i-\bar x)^2}\cdot\sqrt{\sum(y_i-\bar y)^2}$.}
+Prodotto delle due ampiezze. Per la disuguaglianza di Cauchy--Schwarz è
+il massimo valore (in modulo) che il numeratore può assumere. Dividere
+per questa quantità normalizza $r$ nell'intervallo $[-1, +1]$ e toglie
+ogni dipendenza dalle unità di misura.
+
+\paragraph{Lettura geometrica.} Detti $\vec u$ e $\vec v$ i vettori
+centrati $(x_i - \bar x)_{i=1\dots n}$ e $(y_i - \bar y)_{i=1\dots n}$,
+il numeratore è il prodotto scalare $\vec u \cdot \vec v$, ciascun
+fattore al denominatore è la norma $\lVert\vec u\rVert$ e
+$\lVert\vec v\rVert$, quindi
+\[
+r = \frac{\vec u \cdot \vec v}{\lVert\vec u\rVert\,\lVert\vec v\rVert}
+  = \cos\theta,
+\]
+dove $\theta$ è l'angolo fra le due serie centrate in $\mathbb{R}^n$.
+
+% --------------------------------------------------------
+\subsection{Matrice di correlazione rolling $M_{ij}(t)$}
+% --------------------------------------------------------
+
+\[
+M_{ij}(t) = \frac{\sum_{k} (x_i^{(k)} - \bar x_i)(x_j^{(k)} - \bar x_j)}
+                 {\sqrt{\sum_{k} (x_i^{(k)} - \bar x_i)^2}\,
+                  \sqrt{\sum_{k} (x_j^{(k)} - \bar x_j)^2}}
+\]
+
+\paragraph{$t$.} Frame corrente. La matrice $M(t)$ è ricalcolata a ogni
+frame, scorrendo la finestra di $N$ campioni.
+
+\paragraph{$i$, $j$.} Indici dei due descrittori che si stanno
+correlando. Con $K$ descrittori utilizzabili, $i, j \in \{1, \dots, K\}$.
+La cella $(i, j)$ contiene la correlazione fra il descrittore $i$ e il
+descrittore $j$.
+
+\paragraph{$k$.} Indice del frame interno alla finestra rolling. Varia
+fra $t - N + 1$ e $t$. Sostituisce l'indice $i$ del Pearson generico per
+non confondersi con l'indice $i$ del descrittore.
+
+\paragraph{$x_i^{(k)}$.} Valore del descrittore $i$ al frame $k$ della
+finestra.
+
+\paragraph{$\bar x_i$.} Media del descrittore $i$ sulla finestra di $N$
+frame:
+\[
+\bar x_i = \frac{1}{N}\sum_{k=t-N+1}^{t} x_i^{(k)}.
+\]
+
+\paragraph{Struttura della matrice.} $M(t)$ è simmetrica
+($M_{ij} = M_{ji}$), ha diagonale costante $M_{ii} = +1$ e contiene
+$K(K-1)/2$ valori distinti nel triangolo superiore. Tutti i valori
+stanno in $[-1, +1]$.
+
+% --------------------------------------------------------
+\subsection{$C_1$ -- Coerenza media segnata}
+% --------------------------------------------------------
+
+\[
+C_1(t) = \frac{2}{K(K-1)} \sum_{i < j} M_{ij}(t)
+\]
+
+\paragraph{$K$.} Numero di descrittori utilizzabili (tipicamente 15 dopo
+aver eliminato il descrittore degenerato per ogni frame).
+
+\paragraph{$K(K-1)/2$.} Numero di coppie distinte $(i, j)$ con $i < j$.
+È il numero di celle del triangolo superiore stretto della matrice.
+Per $K = 15$ vale $105$.
+
+\paragraph{$2/[K(K-1)]$.} Reciproco di $K(K-1)/2$, cioè $1/$(numero di
+coppie). Trasforma la somma in una media.
+
+\paragraph{$\sum_{i < j} M_{ij}(t)$.} Somma di tutte le correlazioni a
+coppie nel triangolo superiore della matrice, con il loro segno
+(concordanze positive aumentano, discordanze diminuiscono).
+
+\paragraph{Esito.} $C_1 \in [-1, +1]$. Vale $+1$ solo se tutte le coppie
+sono perfettamente correlate, $-1$ solo se tutte sono perfettamente
+anti-correlate (caso non realizzabile per $K > 2$).
+
+% --------------------------------------------------------
+\subsection{$C_2$ -- Concentrazione assiale}
+% --------------------------------------------------------
+
+\[
+C_2(t) = 2\,\frac{\lvert \lambda_1 \rvert}
+                 {\sum_{i=1}^{K} \lvert \lambda_i \rvert} - 1
+\]
+
+\paragraph{$\lambda_1, \dots, \lambda_K$.} Autovalori della matrice
+$M(t)$, ordinati in modulo decrescente:
+$|\lambda_1| \ge |\lambda_2| \ge \dots \ge |\lambda_K|$. Essendo $M(t)$
+simmetrica, sono tutti reali. Ogni autovalore corrisponde a una
+direzione (autovettore) lungo cui la nuvola dei descrittori si estende:
+$|\lambda_i|$ è proporzionale all'estensione su quella direzione.
+
+\paragraph{$\sum_{i=1}^{K} |\lambda_i|$.} Somma dei moduli di tutti gli
+autovalori. Equivale alla traccia di $M$ se la matrice è
+semidefinita positiva (per Pearson, $\mathrm{tr}(M) = K$); usiamo i
+moduli per gestire eventuali piccoli autovalori negativi prodotti da
+rumore numerico.
+
+\paragraph{$|\lambda_1| / \sum_i |\lambda_i|$.} Frazione di
+``informazione'' (varianza) catturata dal primo asse principale. Sta in
+$[1/K, 1]$: vale $1/K$ se gli autovalori sono tutti uguali (matrice
+isotropa), vale $1$ se solo $\lambda_1$ è non nullo (matrice rank-1).
+
+\paragraph{$2(\cdot) - 1$.} Riscalamento affine da $[0, 1]$ a $[-1, +1]$
+per adattarsi alla scala del bicomb. In pratica si comprime ulteriormente
+da $[1/K, 1]$ ma per $K = 15$ il minimo teorico ($-0{,}87$) non si
+osserva mai sul corpus reale.
+
+% --------------------------------------------------------
+\subsection{$C_3$ -- Asimmetria di segno}
+% --------------------------------------------------------
+
+\[
+C_3(t) = \frac{n_+ - n_-}{n_+ + n_-}
+\]
+
+\paragraph{$n_+$.} Numero di celle del triangolo superiore stretto di
+$M(t)$ con $M_{ij} > 0$.
+
+\paragraph{$n_-$.} Numero di celle con $M_{ij} < 0$. Le eventuali celle
+con $M_{ij} = 0$ esatto (caso degenere) non contribuiscono.
+
+\paragraph{$n_+ + n_-$.} Numero totale di celle considerate. Salvo
+degenerazioni vale $K(K-1)/2$.
+
+\paragraph{$n_+ - n_-$.} Eccesso di concordanze sulle opposizioni. Può
+essere positivo o negativo.
+
+\paragraph{Esito.} $C_3 \in [-1, +1]$. Vale $+1$ se tutte le coppie sono
+positive, $-1$ se tutte negative. A differenza di $C_1$, ignora la
+magnitudine delle correlazioni e guarda solo la loro topologia di segni.
+
+% --------------------------------------------------------
+\subsection{$E_1$ -- Distanza di Frobenius normalizzata}
+% --------------------------------------------------------
+
+\[
+E_1(t) = \frac{1}{\sqrt{K(K-1)}}\,
+        \sqrt{\sum_{i,j} \bigl( M_{ij}(t) - M_{ij}(t-D) \bigr)^2}
+\]
+
+\paragraph{$D$.} Ritardo in frame fra le due matrici confrontate.
+Tipicamente $D = N/2$ (default: 16 frame).
+
+\paragraph{$M_{ij}(t) - M_{ij}(t-D)$.} Variazione della singola cella
+fra l'istante attuale e quello di $D$ frame fa. È un numero in
+$[-2, +2]$.
+
+\paragraph{$\bigl( M_{ij}(t) - M_{ij}(t-D) \bigr)^2$.} Variazione al
+quadrato. Toglie il segno e amplifica le variazioni grandi rispetto a
+quelle piccole.
+
+\paragraph{$\sum_{i,j} (\dots)^2$.} Somma su tutte le celle (l'intera
+matrice, non solo il triangolo). I termini sulla diagonale sono nulli
+($M_{ii} = 1$ sempre), quindi contribuiscono solo i $K(K-1)$ termini
+fuori diagonale, contati due volte per simmetria.
+
+\paragraph{$\sqrt{\sum_{i,j} (\dots)^2}$.} Norma di Frobenius di
+$M(t) - M(t-D)$, indicata $\lVert M(t) - M(t-D) \rVert_F$. È la distanza
+euclidea fra le matrici lette come vettori in $\mathbb{R}^{K\times K}$.
+
+\paragraph{$1/\sqrt{K(K-1)}$.} Fattore di normalizzazione. Senza di lui
+la norma cresce con la taglia della matrice e una soglia $\theta_{E_1}$
+dovrebbe essere riferita al numero di descrittori. Con questo fattore
+$E_1$ è (in pratica) confinato in $[0, \sim 1]$ indipendentemente da $K$.
+
+% --------------------------------------------------------
+\subsection{$E_2$ -- Rotazione dell'asse dominante}
+% --------------------------------------------------------
+
+\[
+E_2(t) = \frac{\mathbf{v}_1(t) \cdot \mathbf{v}_1(t - D)}
+              {\lVert\mathbf{v}_1(t)\rVert\, \lVert\mathbf{v}_1(t-D)\rVert}
+\]
+
+\paragraph{$\mathbf{v}_1(t)$.} Primo autovettore di $M(t)$, cioè
+l'autovettore associato all'autovalore di modulo maggiore $\lambda_1$.
+È un vettore di $K$ componenti, una per descrittore. Indica la
+\emph{direzione} dello spazio dei descrittori lungo cui la nuvola di
+punti si estende di più nella finestra corrente.
+
+\paragraph{$\mathbf{v}_1(t-D)$.} Stessa cosa, calcolata $D$ frame prima.
+
+\paragraph{$\mathbf{v}_1(t) \cdot \mathbf{v}_1(t-D)$.} Prodotto scalare
+fra i due autovettori. Misura quanto le due direzioni puntano nello
+stesso verso.
+
+\paragraph{$\lVert\mathbf{v}_1(t)\rVert$.} Norma euclidea
+dell'autovettore. Le routine numeriche restituiscono autovettori già
+normalizzati a 1, quindi questo fattore vale $1$ in pratica; resta nella
+formula per chiarezza.
+
+\paragraph{Rapporto.} È il coseno dell'angolo fra le due direzioni
+principali. Vale $+1$ se l'asse non è ruotato, $0$ se è ruotato di
+$90^\circ$, $-1$ se è invertito. Il segno è arbitrario: numericamente si
+fissa positivo il primo elemento non nullo, e si lavora sul valore
+assoluto.
+
+\paragraph{Lettura musicale.} Quando l'asse dominante ruota, vuol dire
+che il \emph{profilo} di quale combinazione di descrittori sta variando
+di più è cambiato: per esempio, prima del cambio il timbro variava
+soprattutto sull'asse luminosità (centroid, rolloff), dopo varia
+soprattutto sull'asse grana (flatness, entropia). $E_2$ basso
+segnala questo riassetto qualitativo del gesto.
+
+% ============================================================
+\section{Riferimenti}
+% ============================================================
+
+\begin{itemize}[nosep]
+  \item Bullock, J. (2008). \emph{Implementing audio feature extraction
+        in live electronic music}. PhD thesis, Birmingham City University.
+  \item Peeters, G. (2003). \emph{A large set of audio features for sound
+        description}. CUIDADO Project Report, IRCAM.
+  \item Lerch, A. (2023). \emph{An Introduction to Audio Content Analysis}.
+        Wiley.
+  \item Park, T.\,H. (2004). \emph{Towards Automatic Musical Instrument
+        Timbre Recognition}. PhD thesis, Princeton University.
+\end{itemize}
+
+\end{document}

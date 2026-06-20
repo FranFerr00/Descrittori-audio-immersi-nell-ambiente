@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+38_2sin_divergono_1000.wav,15.0,351,351,5.372,0.36,256.0,14208.0,67,0.003944,0.00825,17.9

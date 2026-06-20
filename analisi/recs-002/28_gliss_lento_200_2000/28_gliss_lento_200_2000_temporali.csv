@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+28_gliss_lento_200_2000.wav,10.0,234,234,5.192,0.522,4650.7,5034.7,55,0.008732,0.020185,22.5

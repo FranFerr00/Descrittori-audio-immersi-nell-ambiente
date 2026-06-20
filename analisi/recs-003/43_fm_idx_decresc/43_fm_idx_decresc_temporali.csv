@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+43_fm_idx_decresc.wav,10.0,234,234,5.601,0.563,6272.0,2090.7,2,0.004954,0.007527,9.6

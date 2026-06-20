@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+19_sin_diminuendo.wav,5.0,117,117,1.229,0.248,0.0,4010.7,0,0.283342,0.563586,43.8

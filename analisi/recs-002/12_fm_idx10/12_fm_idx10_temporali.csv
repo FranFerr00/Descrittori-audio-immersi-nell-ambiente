@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+12_fm_idx10.wav,5.0,117,117,2.528,0.511,3370.7,1280.0,20,0.004559,0.007298,5.4

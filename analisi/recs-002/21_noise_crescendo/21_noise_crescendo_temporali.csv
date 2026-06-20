@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+21_noise_crescendo.wav,5.0,117,117,1.881,0.38,682.7,3541.3,25,0.002187,0.006144,16.8

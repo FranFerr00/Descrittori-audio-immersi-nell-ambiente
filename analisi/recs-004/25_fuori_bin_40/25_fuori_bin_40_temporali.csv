@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+25_fuori_bin_40.wav,5.0,117,117,2.291,0.463,2688.0,2261.3,26,0.003103,0.005028,6.2

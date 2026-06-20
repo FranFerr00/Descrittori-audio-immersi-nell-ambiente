@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+06_noise_bp_q500.wav,5.0,117,117,2.475,0.5,0.0,2901.3,25,0.362582,0.396425,1.5

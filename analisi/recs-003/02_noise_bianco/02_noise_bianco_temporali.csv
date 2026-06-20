@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+02_noise_bianco.wav,5.0,117,117,2.256,0.456,426.7,4522.7,23,0.001443,0.002827,8.1

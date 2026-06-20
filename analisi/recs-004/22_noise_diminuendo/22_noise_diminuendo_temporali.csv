@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+22_noise_diminuendo.wav,5.0,117,117,1.554,0.314,768.0,2986.7,34,0.001807,0.004483,21.7

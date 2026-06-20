@@ -1,0 +1,2 @@
+file,duration_s,n_frames_valid,n_frames_total,temporal_centroid_s,symmetry,attack_ms,decay_ms,onset_count,rms_mean,rms_peak,dynamic_range_db
+39_2sin_convergono_unisono.wav,15.0,351,351,8.641,0.579,8149.3,725.3,42,0.004989,0.008021,11.1
