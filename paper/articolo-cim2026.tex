@@ -344,6 +344,15 @@ Il controllo che ne risulta è bipolare: nasce dal rapporto fra le distanze del 
 
 Il valore con segno $v$ sta sempre nell'intervallo $[-1, 1]$: vale $+1$ quando il punto coincide con il prototipo positivo, $-1$ quando coincide con quello negativo, e $0$ a metà strada fra i due. Le distanze si calcolano nello spazio dei descrittori, dopo averlo normalizzato a z-score congelato sul corpus di riferimento.
 
+\begin{figure*}
+ \centerline{\includegraphics[width=0.82\textwidth]{figura_controllo_nodi.pdf}}
+ \caption{Il controllo a nodi nella stanza, in z-score. A sinistra, sui sintetici:
+          $v$ a due metri contro $v$ a un metro (entrambi ripresi, nodi a un metro).
+          A destra, sugli strumenti lungo la distanza: $R$ fra $v$ ripreso e $v$ a un metro,
+          su un asse largo fra registri (blu) e uno stretto fra suoni dello stesso strumento (rosso).}
+ \label{fig:controllonodi}
+\end{figure*}
+
 %\begin{figure}[tbp]
  %\centerline{\includegraphics[width=\columnwidth]{figura_ancore.pdf}}
  %caption{Il controllo a nodi: il valore con segno $v$ nasce dal rapporto fra le
@@ -361,15 +370,6 @@ Il meccanismo del metodo è che il contesto entra alla pari in entrambi i termin
  Per ciascuno dei quarantacinque sintetici ho confrontato il valore di $v$ a un metro con quello a due metri, entrambi ripresi nella stanza, con i due nodi tarati una volta nell'ambiente a un metro. È la condizione del vivo: l'ingresso e i nodi vivono nello stesso ambiente, non esiste un riferimento asciutto. I punti restano sulla diagonale (Figura~\ref{fig:controllonodi}, a sinistra), con correlazione intorno a $0{,}95$ e pendenza vicina a $0{,}9$: la lettura a due metri quasi coincide con quella a un metro. I descrittori assoluti, presi uno per uno, si spostano invece fra un metro e due senza una direzione comune. La coppia sinusoide/rumore percorre l'asse di massima varianza, il più facile da conservare; ripetendo la misura su altre coppie e sugli strumenti, la tenuta si rivela dipendere dall'asse più che dalla distanza fra i nodi. Fra i sintetici una coppia di modulazioni di frequenza si conserva (R attorno a 0,6--0,7), una di miscele tonale/rumore si appiattisce e a due metri si inverte. Sugli strumenti, lungo le otto distanze (Figura~\ref{fig:controllonodi}, a destra), su un asse fra due clarinetti di taglia diversa (contrabbasso grave e soprano) la correlazione fra la lettura ripresa e quella a un metro resta intorno a 0,9 fino a otto metri, mentre su un asse stretto fra suoni dello stesso strumento la lettura si fa irregolare: tiene fra 0,4 e 0,8 quasi ovunque e tocca lo zero solo al microfono 6, il ventre dell'onda stazionaria.
 
 Va però chiarito con quali suoni lo sto provando: erano stati registrati per studiare la catena e la distanza, non per saggiare la solidità dei nodi, e questi numeri vanno presi come indicativi del meccanismo, non come una stima conclusiva del controllo. Va inoltre considerato che un cluster non è un punto fermo nello spazio dei descrittori: al suo interno il suono si muove di continuo, e trattarlo come un riferimento unico è una semplificazione.
-
-\begin{figure*}
- \centerline{\includegraphics[width=0.82\textwidth]{figura_controllo_nodi.pdf}}
- \caption{Il controllo a nodi nella stanza, in z-score. A sinistra, sui sintetici:
-          $v$ a due metri contro $v$ a un metro (entrambi ripresi, nodi a un metro).
-          A destra, sugli strumenti lungo la distanza: $R$ fra $v$ ripreso e $v$ a un metro,
-          su un asse largo fra registri (blu) e uno stretto fra suoni dello stesso strumento (rosso).}
- \label{fig:controllonodi}
-\end{figure*}
 
 Conta semmai quali suoni si scelgono come nodi: un polo deve restare distintivo anche sotto ripresa. Un suono indifferenziato come il rumore bianco è un cattivo polo, perché passando per la catena, che ne taglia gli acuti, perde la sua collocazione estrema e scivola verso il centro della nuvola, e l'asse degenera (quasi ogni segnale finisce a ridosso di un polo). I suoni reali, che restano riconoscibili sotto microfono e vivono già nello stesso ambiente dell'ingresso, non hanno questo difetto, ed è con loro che vale la tenuta della Figura~\ref{fig:controllonodi}.
 
