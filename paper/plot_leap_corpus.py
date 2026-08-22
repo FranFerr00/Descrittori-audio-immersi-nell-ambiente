@@ -123,11 +123,23 @@ def genera_figura():
     ax.set_xticks(x)
     ax.set_xticklabels([etichetta_xtick(f) for f in files],
                        rotation=90, fontsize=7)
-    ax.set_ylabel("centroide media (Hz)")
+    ax.set_ylabel("centroide medio (Hz)")
     ax.grid(True, alpha=0.3, axis="y")
 
+    # -- legenda: punto colorato + numero = microfono (1 m ... 8 m) --
+    from matplotlib.lines import Line2D
+    handles = [Line2D([0], [0], marker="o", linestyle="none",
+                      markerfacecolor=CMAP(ci), markeredgecolor="none",
+                      markersize=7, label=str(ch))
+               for ci, ch in enumerate(range(1, 9))]
+    leg = ax.legend(handles=handles, ncol=8, loc="upper center",
+                    bbox_to_anchor=(0.5, -0.28), frameon=False, fontsize=7,
+                    title="microfono (numero nel punto = distanza: 1 = 1 m dalla sorgente … 8 = 8 m)",
+                    handletextpad=0.2, columnspacing=1.2)
+    plt.setp(leg.get_title(), fontsize=7)
+
     plt.tight_layout()
-    fig.savefig(OUT_PDF, dpi=150)
+    fig.savefig(OUT_PDF, dpi=150, bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
     print(f"Salvato: {OUT_PDF}")
 

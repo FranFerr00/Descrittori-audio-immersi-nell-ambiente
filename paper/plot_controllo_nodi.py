@@ -66,7 +66,7 @@ def main():
 
     fig.tight_layout()
     out = HERE / "figura_controllo_nodi.pdf"
-    fig.savefig(out)
+    fig.savefig(out, bbox_inches="tight", pad_inches=0.02)
     print(f"scritto {out}")
 
 
