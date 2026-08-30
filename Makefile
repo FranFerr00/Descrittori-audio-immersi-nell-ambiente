@@ -63,13 +63,13 @@ STAMP_TEMPORALI  := $(foreach c,$(CATALOGHI),$(STAMP_DIR)/temp-$(c))
 STAMP_NUOVI      := $(STAMP_DIR)/nuovi-sintetici \
                     $(foreach c,$(CATALOGHI),$(STAMP_DIR)/nuovi-$(c))
 
-.PHONY: all anon wav segnali segnali-30db recs cataloghi temporali tabelle desc nuovi zscore zscore-plot clean clean-tabelle clean-wav clean-segnali clean-segnali-30db clean-recs clean-cataloghi clean-temporali clean-desc clean-nuovi clean-zscore
+.PHONY: all sync-supplementare wav segnali segnali-30db recs cataloghi temporali tabelle desc nuovi zscore zscore-plot clean clean-tabelle clean-wav clean-segnali clean-segnali-30db clean-recs clean-cataloghi clean-temporali clean-desc clean-nuovi clean-zscore
 
 all: tabelle
 
-# Rigenera ../descrittori-anon per la peer-review cieca (sottoinsieme pubblicabile)
-anon:
-	bash scripts/genera_anon.sh
+# Aggiorna il repo pubblico del materiale supplementare (citato in bibliografia)
+sync-supplementare:
+	bash scripts/sync_supplementare.sh
 
 # --- analisi singolo descrittore (test rapido) ---
 # Uso: make desc ONLY=tpr,n_peaks
