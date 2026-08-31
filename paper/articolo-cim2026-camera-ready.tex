@@ -240,9 +240,6 @@ Quell'insieme chiuso non è nato però così: lungo il percorso ho scambiato alc
 
 \subsection{La terza prova: la distanza}\label{sec:leap}
 
-%La linea di base mi ha portato fin sotto microfono, in sala, ma con una sorgente alla volta e una distanza alla volta.
-Per vedere la catena al lavoro in modo sistematico ho preparato la prova centrale, a LEAP, Laboratorio ElettroAcustico Permanente. Ho usato otto microfoni omnidirezionali (Figura~\ref{fig:apparato}), prima raggruppati stretti e poi distesi in fila a passi di un metro, da uno a otto metri dalla sorgente (il canale $n$ corrisponde a $n$ metri), e li ho collegati a un preamplificatore multicanale. Come sorgente ho usato dapprima un altoparlante, con rumore rosa, poi strumenti acustici: un clarinetto contrabbasso (un Do grave a tubo chiuso e un cluster) e un clarinetto soprano (un cluster). Il clarinetto contrabbasso l'ho registrato sia con la sua campana originale rivolta in avanti sia con una campana custom rivolta verso l'alto. Ogni campione l'ho registrato due volte, con i microfoni in orizzontale (le capsule rivolte verso la sorgente) e in verticale (puntati verso l'alto), per separare la propagazione dell'onda dalla direttività propria del microfono. I guadagni li ho calibrati perché gli otto canali restituissero lo stesso RMS sul cluster di calibrazione. %l'allineamento è risultato ottimo, con una deviazione standard di 0,17 dB sugli otto canali.
-
 \begin{figure}[t]
  \centering
  \includegraphics[width=0.48\columnwidth]{foto_apparato.jpg}\hspace{0.6em}%
@@ -251,19 +248,11 @@ Per vedere la catena al lavoro in modo sistematico ho preparato la prova central
  \label{fig:apparato}
 \end{figure}
 
-La Figura~\ref{fig:leap_corpus} dà il quadro d'insieme dei campioni di clarinetto contrabbasso: il centroide si sposta vistosamente da un punto di ripresa all'altro.
-
-\begin{figure*}
+\begin{figure*}[t]
  \centerline{\includegraphics[width=0.85\textwidth]{figura_leap_corpus.pdf}}
  \caption{Il clarinetto contrabbasso nel terzo esperimento: per ogni campione (colonna: le due campane, originale e custom, nei due orientamenti del microfono) il centroide medio a banda piena agli otto microfoni; le linee uniscono lo stesso microfono fra i campioni (numero e colore del punto: vedi legenda).}
  \label{fig:leap_corpus}
 \end{figure*}
-%Il filo conduttore è il centroide. Per costruzione è invariante al guadagno, come ho dimostrato nella linea di base (Sezione~\ref{sec:basale}): scalando lo spettro per un fattore qualsiasi, il suo valore non cambia.
-Il centroide è invariante al guadagno, e ne segue un fatto prezioso: se cambia passando da un microfono all'altro, quel cambiamento non è livello, è lo spettro che la catena deforma lungo il tragitto.
-
-La prima osservazione riguarda la perdita di acuti con la distanza. A banda intera il centroide del rumore scende nettamente con la distanza: in orizzontale da circa 8970 Hz a un metro fino a circa 5700 Hz a otto metri, all'incirca un terzo in meno; in verticale da circa 6300 a circa 5000 Hz. Ma limitando l'analisi a 10 kHz lo stesso centroide appare quasi piatto, attorno a 3500 Hz e appena mosso, perché la perdita è tutta negli acuti oltre i 10 kHz: l'aria assorbe le frequenze alte lungo il tragitto, e un tetto a 10 kHz lo nasconderebbe. Nella stessa direzione spingono però anche la direttività della sorgente e il campo riverberato, che questi dati confondono con l'assorbimento.
-
-La seconda osservazione è un'onda stazionaria sul clarinetto contrabbasso (Figura~\ref{fig:leap_onda}). Sui suoi cluster il centroide, mediato sui campioni, disegna un'onda lungo gli otto microfoni: una cresta attorno al microfono 3, un avvallamento attorno ai microfoni 5 e 6. Le curve orizzontale e verticale quasi coincidono nella forma, e questo esclude che sia direttività del microfono: è un'onda stazionaria della fondamentale del clarinetto nella stanza. Vicino al microfono 3 c'è un nodo di pressione, dove la fondamentale è debole e il centroide perciò sale; vicino ai microfoni 5 e 6 c'è un ventre, dove la fondamentale è forte e il centroide perciò scende. La geometria torna: il quarto d'onda di circa due metri e mezzo fra nodo e ventre dà una frequenza attorno ai 34 Hz, dentro il registro grave dello strumento. Il clarinetto soprano non mostra quest'onda, perché la sua fondamentale più acuta ha nodi e ventri a passo più fitto.
 
 \begin{figure}[tbp]
  \centerline{\includegraphics[width=0.74\columnwidth]{figura_leap_onda_ccb.pdf}}
@@ -273,6 +262,30 @@ La seconda osservazione è un'onda stazionaria sul clarinetto contrabbasso (Figu
           Cresta al microfono~3 (nodo di pressione), avvallamento ai microfoni 5--6 (ventre).}
  \label{fig:leap_onda}
 \end{figure}
+
+%La linea di base mi ha portato fin sotto microfono, in sala, ma con una sorgente alla volta e una distanza alla volta.
+Per vedere la catena al lavoro in modo sistematico ho preparato la prova centrale, a LEAP, Laboratorio ElettroAcustico Permanente. Ho usato otto microfoni omnidirezionali (Figura~\ref{fig:apparato}), prima raggruppati stretti e poi distesi in fila a passi di un metro, da uno a otto metri dalla sorgente (il canale $n$ corrisponde a $n$ metri), e li ho collegati a un preamplificatore multicanale. Come sorgente ho usato dapprima un altoparlante, con rumore rosa, poi strumenti acustici: un clarinetto contrabbasso (un Do grave a tubo chiuso e un cluster) e un clarinetto soprano (un cluster). Il clarinetto contrabbasso l'ho registrato sia con la sua campana originale rivolta in avanti sia con una campana custom rivolta verso l'alto. Ogni campione l'ho registrato due volte, con i microfoni in orizzontale (le capsule rivolte verso la sorgente) e in verticale (puntati verso l'alto), per separare la propagazione dell'onda dalla direttività propria del microfono. I guadagni li ho calibrati perché gli otto canali restituissero lo stesso RMS sul cluster di calibrazione. %l'allineamento è risultato ottimo, con una deviazione standard di 0,17 dB sugli otto canali.
+
+
+La Figura~\ref{fig:leap_corpus} dà il quadro d'insieme dei campioni di clarinetto contrabbasso: il centroide si sposta vistosamente da un punto di ripresa all'altro.
+
+%Il filo conduttore è il centroide. Per costruzione è invariante al guadagno, come ho dimostrato nella linea di base (Sezione~\ref{sec:basale}): scalando lo spettro per un fattore qualsiasi, il suo valore non cambia.
+Il centroide è invariante al guadagno, e ne segue un fatto prezioso: se cambia passando da un microfono all'altro, quel cambiamento non è livello, è lo spettro che la catena deforma lungo il tragitto.
+
+La prima osservazione riguarda la perdita di acuti con la distanza. A banda intera il centroide del rumore scende nettamente con la distanza: in orizzontale da circa 8970 Hz a un metro fino a circa 5700 Hz a otto metri, all'incirca un terzo in meno; in verticale da circa 6300 a circa 5000 Hz. Ma limitando l'analisi a 10 kHz lo stesso centroide appare quasi piatto, attorno a 3500 Hz e appena mosso, perché la perdita è tutta negli acuti oltre i 10 kHz: l'aria assorbe le frequenze alte lungo il tragitto, e un tetto a 10 kHz lo nasconderebbe. Nella stessa direzione spingono però anche la direttività della sorgente e il campo riverberato, che questi dati confondono con l'assorbimento.
+
+La seconda osservazione è un'onda stazionaria sul clarinetto contrabbasso (Figura~\ref{fig:leap_onda}). Sui suoi cluster il centroide, mediato sui campioni, disegna un'onda lungo gli otto microfoni: una cresta attorno al microfono 3, un avvallamento attorno ai microfoni 5 e 6. Le curve orizzontale e verticale quasi coincidono nella forma, e questo esclude che sia direttività del microfono: è un'onda stazionaria della fondamentale del clarinetto nella stanza. Vicino al microfono 3 c'è un nodo di pressione, dove la fondamentale è debole e il centroide perciò sale; vicino ai microfoni 5 e 6 c'è un ventre, dove la fondamentale è forte e il centroide perciò scende. La geometria torna: il quarto d'onda di circa due metri e mezzo fra nodo e ventre dà una frequenza attorno ai 34 Hz, dentro il registro grave dello strumento. Il clarinetto soprano non mostra quest'onda, perché la sua fondamentale più acuta ha nodi e ventri a passo più fitto.
+
+\begin{figure*}[t]
+ \centerline{\includegraphics[width=0.82\textwidth]{figura_controllo_nodi.pdf}}
+ \caption{Il controllo a nodi nella stanza, in z-score. A sinistra, sui sintetici:
+          $v$ a due metri contro $v$ a un metro (entrambi ripresi, nodi a un metro).
+          A destra, sugli strumenti lungo la distanza: $R$ fra $v$ ripreso e $v$ a un metro,
+          su un asse largo fra registri (blu) e uno stretto fra suoni dello stesso strumento (rosso).}
+ \label{fig:controllonodi}
+\end{figure*}
+
+
 
 %La terza osservazione riguarda l'attenuazione. L'RMS del rumore scende con la distanza in modo dolce: ho misurato circa $-8{,}6$ dB a otto metri in orizzontale, cioè circa $-2{,}9$ dB per raddoppio, confermato da un fonometro nella stanza (96/93/90/87 dBA a 1/2/4/8 metri, esattamente $-3$ dB per raddoppio). L'ampiezza segue dunque la legge $1/\sqrt{r}$: il contributo riverberante della sala, che decade poco con la distanza, si somma al suono diretto e ne ammorbidisce la caduta.
 
@@ -322,14 +335,6 @@ Il controllo che ne risulta è bipolare: il valore di controllo $v$ nasce dal ra
 
 Il valore con segno $v$ vale $+1$ sul prototipo positivo, $-1$ su quello negativo, $0$ a metà strada. Ogni nodo è il vettore dei sedici descrittori del suono di riferimento, mediati sui suoi frame; le distanze sono euclidee in quello spazio, normalizzato a z-score congelato (Sezione~\ref{sec:basale}), con tutti i descrittori a peso uguale.
 
-\begin{figure*}
- \centerline{\includegraphics[width=0.82\textwidth]{figura_controllo_nodi.pdf}}
- \caption{Il controllo a nodi nella stanza, in z-score. A sinistra, sui sintetici:
-          $v$ a due metri contro $v$ a un metro (entrambi ripresi, nodi a un metro).
-          A destra, sugli strumenti lungo la distanza: $R$ fra $v$ ripreso e $v$ a un metro,
-          su un asse largo fra registri (blu) e uno stretto fra suoni dello stesso strumento (rosso).}
- \label{fig:controllonodi}
-\end{figure*}
 
 %\begin{figure}[tbp]
  %\centerline{\includegraphics[width=\columnwidth]{figura_ancore.pdf}}
@@ -340,20 +345,20 @@ Il valore con segno $v$ vale $+1$ sul prototipo positivo, $-1$ su quello negativ
 %\end{figure}
 
 %Un punto va dichiarato con chiarezza:
-Sono i nodi a definire l'asse, e il controllo legge soltanto la posizione del punto lungo quell'asse, restando cieco a ciò che gli è ortogonale. La scelta dei nodi è perciò una decisione compositiva. Se si fissano due suoni dello stesso strumento, per esempio un piano e un forte di clarinetto, l'asse è quella dinamica, e un punto che si muove in tutt'altra direzione vi resta vicino allo zero: la sua variazione cade fuori dall'asse scelto. Due sorgenti diverse, invece, misurano quanto un suono pende verso l'una o verso l'altra. Una condizione necessaria è la raggiungibilità: l'asse deve essere percorribile dal segnale in ingresso, altrimenti il controllo non produce variazione. %Tutto questo è coerente con la tesi di un insieme chiuso di sedici descrittori: i descrittori restano sempre gli stessi, a cambiare sono soltanto i due prototipi e la scala con cui si misurano le distanze.
+Sono i nodi a definire l'asse, e il controllo legge soltanto la posizione del punto lungo quell'asse, restando cieco a ciò che gli è ortogonale. La scelta dei nodi è perciò una decisione compositiva. Se si fissano due suoni dello stesso strumento, per esempio un piano e un forte di clarinetto, l'asse è quella dinamica, e un punto che si muove in tutt'altra direzione vi resta vicino allo zero: la sua variazione cade fuori dall'asse scelto. Due sorgenti diverse, invece, misurano quanto un segnale pende verso l'una o verso l'altra. Una condizione necessaria è la raggiungibilità: l'asse deve essere percorribile dal segnale in ingresso, altrimenti il controllo non produce variazione. %Tutto questo è coerente con la tesi di un insieme chiuso di sedici descrittori: i descrittori restano sempre gli stessi, a cambiare sono soltanto i due prototipi e la scala con cui si misurano le distanze.
 
 Il meccanismo del metodo è che il contesto entra alla pari in entrambi i termini del confronto. Se prendo i due nodi nello stesso ambiente e con la stessa catena del segnale in ingresso, la firma del luogo che la prova della distanza ha reso visibile (l'aria che toglie gli acuti, l'onda stazionaria della fondamentale) grava in egual misura sul segnale e sui suoi riferimenti, e nel rapporto fra le distanze si bilancia: la catena, coautrice del numero, diventa il fondo comune su cui si legge il gesto invece di confondersi con esso.
 
 %Ho voluto mettere questa relatività alla prova invece di darla per buona.
- Per ciascuno dei quarantacinque sintetici ho confrontato il valore di $v$ a un metro con quello a due metri, entrambi ripresi nella stanza, con i due nodi tarati una volta nell'ambiente a un metro. È la condizione del vivo: l'ingresso e i nodi vivono nello stesso ambiente, non esiste un riferimento asciutto. I punti restano sulla diagonale (Figura~\ref{fig:controllonodi}, a sinistra), con correlazione intorno a $0{,}95$ e pendenza vicina a $0{,}9$: la lettura a due metri quasi coincide con quella a un metro. Misurati sullo stesso passaggio e con la stessa statistica, i descrittori assoluti si spostano poco, mentre kurtosis e skewness derivano nettamente (bias di $+3{,}3$ e $+1{,}0$ in z-score). Sui sintetici $v$ resta centrato, e prescinde dal sapere in anticipo quali descrittori quel luogo lascerà fermi; sugli strumenti lungo la distanza conserva l'ordine dei suoni ma non il proprio livello. La coppia sinusoide/rumore percorre però l'asse di massima varianza, il più facile da conservare. Fra i sintetici una coppia di modulazioni di frequenza si conserva (R attorno a 0,6--0,7), una di miscele tonale/rumore si appiattisce e a due metri si inverte.
+ Per ciascuno dei quarantacinque sintetici ho confrontato il valore di $v$ a un metro con quello a due metri, entrambi ripresi nella stanza, con i due nodi tarati una volta nell'ambiente a un metro. È la condizione del vivo: l'ingresso e i nodi vivono nello stesso ambiente, non esiste un riferimento asciutto. I punti restano sulla diagonale (Figura~\ref{fig:controllonodi}, a sinistra), con correlazione intorno a $0{,}95$ e pendenza vicina a $0{,}9$: la lettura a due metri quasi coincide con quella a un metro. Misurati sullo stesso passaggio e con la stessa statistica, i descrittori assoluti si spostano poco, mentre kurtosis e skewness derivano nettamente (bias di $+3{,}3$ e $+1{,}0$ in z-score). Sui sintetici $v$ resta centrato, e prescinde dal sapere in anticipo quali descrittori quel luogo lascerà fermi; sugli strumenti lungo la distanza conserva l'ordine dei segnali ma non il proprio livello. La coppia sinusoide/rumore percorre però l'asse di massima varianza, il più facile da conservare. Fra i sintetici una coppia di modulazioni di frequenza si conserva (R attorno a 0,6--0,7), una di miscele tonale/rumore si appiattisce e a due metri si inverte.
 
 Sugli strumenti, lungo le otto distanze (Figura~\ref{fig:controllonodi}, a destra), su un asse largo, fra due clarinetti di taglia diversa (contrabbasso grave e soprano) la correlazione fra la lettura ripresa e quella a un metro resta intorno a 0,9 fino a otto metri, mentre su un asse stretto fra suoni dello stesso strumento la lettura si fa irregolare: tiene fra 0,4 e 0,8 quasi ovunque e tocca lo zero solo al microfono 6, il ventre dell'onda stazionaria.
 
-Questi numeri indicano il meccanismo più che la portata del controllo: li ho misurati su suoni registrati per studiare la catena, non per saggiare i nodi. Un cluster, poi, non è un punto fermo: al suo interno il suono si muove di continuo, e trattarlo come riferimento unico è una semplificazione.
+Questi numeri indicano il meccanismo più che la portata del controllo: li ho misurati su segnali registrati per studiare la catena, non per saggiare i nodi. Un cluster, poi, non è un punto fermo: al suo interno il suono si muove di continuo, e trattarlo come riferimento unico è una semplificazione.
 
 Il crollo al microfono 6 mostra la condizione di validità del metodo, ed è comune ai due risultati. Il bilanciamento richiede che la firma del luogo gravi in egual misura sul segnale e sui due nodi. Al ventre dell'onda la fondamentale è forte, e la Tabella~\ref{tab:onda} mostra che dodici descrittori su sedici rispondono proprio alla sua forza. Su un asse largo, fra registri diversi, i due nodi stanno da parti opposte rispetto a quella leva e lo spostamento resta comune ai due termini del rapporto. Su un asse stretto, fra suoni dello stesso strumento, i due nodi condividono la fondamentale: l'onda li muove quasi insieme, la differenza fra le due distanze si assottiglia, e con essa l'informazione che $v$ trasporta. Al ventre $v$ non sbaglia il numero: lì il segnale è davvero un altro. A venire meno è la coincidenza fra ciò su cui poggia l'asse e ciò su cui agisce il luogo, che conta più della distanza fra i nodi: su un asse stretto è il luogo stesso a occupare l'asse. Scegliere un asse è perciò anche scegliere a quale leva della stanza si resta esposti, e dove cade il microfono è parte della taratura (Sezione~\ref{sec:discussione}).
 
-Da questa condizione ricavo due criteri. Il primo è dove cadono i nodi rispetto ai suoni in ingresso. Con una sinusoide e un rumore bianco come poli, i gesti di clarinetto e timpano restano fra $+0{,}1$ e $+0{,}3$, lontani da entrambi i lati: l'asse è definito, ma il segnale ne percorre una frazione. Riprendere i due poli con la stessa catena dell'ingresso, che è già la regola per entrambi i nodi, non cambia questo: la loro collocazione dipende da quali suoni sono, non da come sono stati registrati. Nodi presi fra i suoni dello stesso mondo dell'ingresso lasciano invece al segnale l'intervallo fra $-1$ e $+1$, ed è con questi che vale la tenuta della Figura~\ref{fig:controllonodi}.
+Da questa condizione ricavo due criteri. Il primo è dove cadono i nodi rispetto ai segnali in ingresso. Con una sinusoide e un rumore bianco come poli, i gesti di clarinetto e timpano restano fra $+0{,}1$ e $+0{,}3$, lontani da entrambi i lati: l'asse è definito, ma il segnale ne percorre una frazione. Riprendere i due poli con la stessa catena dell'ingresso, che è già la regola per entrambi i nodi, non cambia questo: la loro collocazione dipende da quali suoni sono, non da come sono stati registrati. Nodi presi fra i suoni dello stesso mondo dell'ingresso lasciano invece al segnale l'intervallo fra $-1$ e $+1$, ed è con questi che vale la tenuta della Figura~\ref{fig:controllonodi}.
 
 Il secondo è la metrica, perché la tenuta vale per la distanza euclidea sugli z-score e non per lo sbiancamento di Mahalanobis~\cite{mahalanobis1936generalised}: è piuttosto uno strumento diagnostico da usare in fase di taratura, non una correzione da applicare sempre. Amplificando flux e irregularity, i descrittori di varianza ridotta nel corpus, lo sbiancamento dà peso proprio all'irregolarità che l'ambiente aggiunge, e sotto ripresa il controllo si conserva meno.
 
