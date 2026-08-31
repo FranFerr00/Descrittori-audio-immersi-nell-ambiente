@@ -16,7 +16,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-DEST="${1:-/home/francesco/github/Descrittori-audio-immersi-nell-ambiente-quale-mappatura-ricavarne}"
+DEST="${1:-/home/francesco/github/Descrittori-audio-immersi-nell-ambiente}"
 
 [ -d "$DEST/.git" ] || { echo "ERRORE: $DEST non e' un clone git." >&2; exit 1; }
 
